@@ -17,12 +17,15 @@ public class ClientGUI extends JFrame{
 	private GamePanel gamePlayView;
 	private GameSidePanel gameInfoView;
 	private JPanel gameWrapper;
+	private MenuPanel menuView;
 	//private CardLayout cardLayout = new CardLayout();
 	//private JPanel mainWrapperPanel = new JPanel(cardLayout);
 	
 	
 	public void changeToMenuView() {
-		
+		this.setContentPane(menuView);
+		this.invalidate();
+		this.validate();
 	}
 	public void changeToGameView() {
 		this.setSize(750,600);
@@ -59,8 +62,10 @@ public class ClientGUI extends JFrame{
 		initialView = new InitialPanel(this);
 		loginView = new LoginPanel(this);
 		createAccountView = new CreateAccountPanel(this);
+		this.menuView = new MenuPanel(this);
 		this.gameInfoView = new GameSidePanel(this);
 		this.gamePlayView = new GamePanel(this, gameInfoView);
+		
 		
 		this.gameWrapper = new JPanel(new BorderLayout());
 		gameWrapper.add(gamePlayView, BorderLayout.EAST);

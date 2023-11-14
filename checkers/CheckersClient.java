@@ -38,7 +38,7 @@ public class CheckersClient extends AbstractClient{
 		
 		if(test.equals("LOGIN:TRUE")) {
 			//parent.changeToContactView();
-			parent.changeToGameView();
+			parent.changeToMenuView();
 		}
 		if (test.equals("LOGIN:FALSE")) {
 			loginView.loginError();
@@ -48,7 +48,7 @@ public class CheckersClient extends AbstractClient{
 			//parent.changeToContactView();
 			//createAccountView.loggedIntoNewAccount();
 			//this is where menu will go
-			parent.changeToGameView();
+			parent.changeToMenuView();
 		}
 		if (test.equals("NEW:FALSE")) {
 			createAccountView.userNameError("Username Already In Use");
