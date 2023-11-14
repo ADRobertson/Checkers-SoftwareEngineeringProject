@@ -1,4 +1,4 @@
-//Test
+//Testing
 package checkers;
 
 import java.io.FileInputStream;
