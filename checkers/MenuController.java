@@ -22,5 +22,17 @@ public class MenuController {
 				parent.changeToInitialView();
 			}
 		});
+		
+		hostGameButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				client.sendHostGame();
+			}
+		});
+		
+		joinGameButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				client.sendJoinGame();
+			}
+		});
 	}
 }

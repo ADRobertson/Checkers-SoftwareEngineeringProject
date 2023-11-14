@@ -14,6 +14,7 @@ public class CheckersServer extends AbstractServer {
 	private JTextArea serverLog;
 	private DatabaseFile databaseFile;
 	private Database database;
+	private CheckersGame game;
 	
 	public void setDatabase(Database data) {
 		database = data;
@@ -25,6 +26,7 @@ public class CheckersServer extends AbstractServer {
 		this.status = status;
 		this.serverLog = log;
 		databaseFile = new DatabaseFile();
+		game = new CheckersGame();
 	}
 	
 	public void clientConnected(ConnectionToClient client) {
@@ -60,6 +62,40 @@ public class CheckersServer extends AbstractServer {
 		*/
 		String message = arg0.toString();
 		System.out.println(message);
+		
+		if (game.isStarted() && message.contains("SELECT")) {
+			
+		}
+		else {
+			
+		}
+		
+		//if a client wants to host
+		if (message.contains("HOST")) {
+			game.setPlayer(arg1);
+			try {
+				arg1.sendToClient("HOSTED");
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			System.out.println("Player One Found");
+		}
+		//if a client wants to join
+		if (message.contains("JOIN")) {
+			if (game.isHosted()) {
+				//game will be set into a ready state when this is called
+				game.setPlayer(arg1);
+				try {
+					arg1.sendToClient("JOINED");
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				System.out.println("Player Two Found");
+				System.out.println("GAME READY AND STARTED");
+			}
+		}
 		if (message.contains("NEW")) {
 			String[] splitString = message.split(":");
 			String[] splitUserNameAndPassword = splitString[1].split(",");

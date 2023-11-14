@@ -9,6 +9,7 @@ public class CheckersClient extends AbstractClient{
 
 	private LoginPanel loginView;
 	private CreateAccountPanel createAccountView;
+	private MenuPanel menuView;
 	private ClientGUI parent;
 
 	public void setLoginView(LoginPanel loginView) {
@@ -16,6 +17,10 @@ public class CheckersClient extends AbstractClient{
 	}
 	public void setCreateAccountView(CreateAccountPanel createAccountView) {
 		this.createAccountView = createAccountView;
+	}
+	
+	public void setMenuView(MenuPanel menuView) {
+		this.menuView = menuView;
 	}
 	public CheckersClient(ClientGUI parent) {
 		super("localhost", 8300);
@@ -27,6 +32,12 @@ public class CheckersClient extends AbstractClient{
 		System.out.println("Server Message Sent to Client: " + arg0);
 		String test = arg0.toString();
 		System.out.println(test.contains("username"));
+		if(test.contains("HOSTED")) {
+			parent.changeToGameView();
+		}
+		if(test.contains("JOINED")) {
+			parent.changeToGameView();
+		}
 		if(test.contains("username")) {
 			System.out.println("Found Username");
 			String[] temp = arg0.toString().split(":");
@@ -71,6 +82,22 @@ public class CheckersClient extends AbstractClient{
 			sendToServer("LOGIN:" + testing);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void sendHostGame() {
+		try {
+			sendToServer("HOST");
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void sendJoinGame() {
+		try {
+			sendToServer("JOIN");
+		} catch(IOException e) {
 			e.printStackTrace();
 		}
 	}
