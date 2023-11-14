@@ -1,5 +1,4 @@
-//Testing
-// This is zac
+//test
 package checkers;
 
 import java.io.FileInputStream;
