@@ -49,6 +49,9 @@ public class GamePanel extends JPanel{
 		return highLightColor;
 	}
 	
+	public ClientGUI getParent() {
+		return parent;
+	}
 
 	
 	public GamePanel(ClientGUI parent, GameSidePanel sidePanel) {

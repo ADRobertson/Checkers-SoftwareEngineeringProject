@@ -1,6 +1,7 @@
 package checkers;
 
 import java.awt.Color;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -24,11 +25,95 @@ public class CheckersGame {
 	private int rows = 8;
 	private int columns = 8;
 	
+	//will be used to store selected from piece
+	private BoardCell from;
+	
 	//will be changed to true when a second player joins
 	private boolean started = false;
 	
-	public void processClick() {
+	public void processClick(int i, int j, ConnectionToClient sender) {
+		//if it's the senders turn
+			//if selected cell has piece and is the color of the sender
+				//select that cell by making the from board cell equal to that
+				//send back determine potential moves so that the user can make the next choice.
+			//else if selected cell doesn't have a piece and is in the determined moves and from is not null
+				//move the from piece to passed board cell (if it's player two this logic might change)
+	}
+	
+	public String determinePotentialMoves() {
+		int i = from.getRow();
+		int j = from.getColumn();
+		boolean leftIsPossible = false;
+		boolean rightIsPossible = false;
+		//boolean backLeftIsPossible = false;
+		//boolean backRightIsPossible = false;
+		List<BoardCell> potentialMoves = new ArrayList<BoardCell>();
+		BoardCell rightMove = null;
+		BoardCell leftMove = null;
+		try {
+			leftMove = cells[i-1][j-1];
+		} catch(Exception e) {		
+			System.out.println("couldn't get left move");
+		}
+		try {
+			rightMove = cells[i-1][j+1];
+		} catch (Exception e) {
+			System.out.println("couldn't get right move");
+			
+		}
 		
+		//if tan (player) piece
+		if (from.getPieceColor() == 0) {
+			//if the piece is a king
+			if (from.isKing()) {
+				
+			}
+			//if the piece is a normal piece
+			else if (!from.isKing()) {
+				if (leftMove != null && leftMove.hasPiece()) {
+					if (leftMove.getPieceColor() == 0) {
+						leftIsPossible = false;
+					}
+					else {
+
+						leftMove = cells[leftMove.getRow()-1][leftMove.getColumn()-1];
+						if (!leftMove.hasPiece()) {
+							leftIsPossible = true;
+						}
+					}
+				}
+				else if (leftMove!=null){
+					leftIsPossible = true;
+				}
+				if (rightMove != null && rightMove.hasPiece()) {
+					if (rightMove.getPieceColor() == 0) {
+						rightIsPossible = false;
+					}
+					else {
+
+						rightMove = cells[rightMove.getRow()-1][rightMove.getColumn()+1];
+						if (!rightMove.hasPiece()) {
+							rightIsPossible = true;
+						}
+					}
+				}
+				else if (rightMove !=null) {
+					rightIsPossible = true;
+				}
+			}
+		}
+		if (rightIsPossible) {
+			potentialMoves.add(rightMove);
+		}
+		if (leftIsPossible) {
+			potentialMoves.add(leftMove);
+		}
+		
+		//for (BoardCell boardCell : potentialMoves) {
+			//boardCell.setBorder(BorderFactory.createLineBorder(Color.YELLOW));
+			//boardCell.setBackground(highLightColor);
+		//}
+		return null;
 	}
 	
 	public void buildBoard() {

@@ -274,12 +274,14 @@ public class GameBoard {
 				GamePanel parent = (GamePanel)clickedCell.getParent();
 				//if ()
 				if (clickedCell.hasPiece()) {
-					parent.getBoard().setFrom(clickedCell);
-					parent.getBoard().unHighlightPotentialMoves();
-					parent.getBoard().determineValidMoves();
+					//parent.getBoard().setFrom(clickedCell);
+					//parent.getBoard().unHighlightPotentialMoves();
+					//parent.getBoard().determineValidMoves();
+					parent.getParent().getChatClient().sendSelectedCell(clickedCell);
+					
 				}
 				else if (!clickedCell.hasPiece() && parent.getBoard().getFrom() != null) {
-					parent.getBoard().movePiece(clickedCell);
+					//parent.getBoard().movePiece(clickedCell);
 				}
 			}
 		};

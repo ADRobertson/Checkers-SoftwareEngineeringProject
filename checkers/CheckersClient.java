@@ -110,4 +110,12 @@ public class CheckersClient extends AbstractClient{
 			e.printStackTrace();
 		}
 	}
+	
+	public void sendSelectedCell(BoardCell cell) {
+		try {
+			sendToServer("SELECT:" + cell.toString());
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
+	}
 }

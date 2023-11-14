@@ -15,7 +15,7 @@ public class CheckersServer extends AbstractServer {
 	private DatabaseFile databaseFile;
 	private Database database;
 	private CheckersGame game;
-	
+
 	public void setDatabase(Database data) {
 		database = data;
 	}
@@ -28,7 +28,7 @@ public class CheckersServer extends AbstractServer {
 		databaseFile = new DatabaseFile();
 		game = new CheckersGame();
 	}
-	
+
 	public void clientConnected(ConnectionToClient client) {
 		try {
 			client.sendToClient("username:"+client.getId());
@@ -38,38 +38,37 @@ public class CheckersServer extends AbstractServer {
 		}
 		serverLog.append("Client " + client.getId() + " Connected\n" );
 	}
-	
+
+
+	public Integer[] parseRowAndColumn(String message) {
+		String[] splitString = message.split(":");
+		String[] splitRowCol = splitString[1].split(",");
+		
+		splitRowCol[0] = splitRowCol[0].replace("(", "");
+		splitRowCol[1] = splitRowCol[1].replace(")", "");
+		
+		Integer[] returnVals = new Integer[2];
+		returnVals[0] = Integer.parseInt(splitRowCol[0]);
+		returnVals[1] = Integer.parseInt(splitRowCol[1]);
+		
+		return returnVals;
+	}
 	public void handleMessageFromClient(Object arg0, ConnectionToClient arg1) {
-		/*
-		try {
-			arg1.sendToClient("hello");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			System.out.println("error on send");
-		}
 		
-		
-		serverLog.append("Client " + arg1.getId() + ": " + arg0.toString() + "\n");
-		try {
-			arg1.sendToClient(arg0.toString());
-			
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			System.out.println("error on send");
-		}
-		*/
 		String message = arg0.toString();
 		System.out.println(message);
-		
+
 		if (game.isStarted() && message.contains("SELECT")) {
+			Integer[] rowAndCol = parseRowAndColumn(message);
 			
+			for (Integer integer : rowAndCol) {
+				System.out.println(integer);
+			}
 		}
 		else {
-			
+
 		}
-		
+
 		//if a client wants to host
 		if (message.contains("HOST")) {
 			game.setPlayer(arg1);
@@ -100,7 +99,7 @@ public class CheckersServer extends AbstractServer {
 			String[] splitString = message.split(":");
 			String[] splitUserNameAndPassword = splitString[1].split(",");
 			LoginData newLogin = new LoginData(splitUserNameAndPassword[0],splitUserNameAndPassword[1]);
-			
+
 			if (database.checkValidUserName(newLogin.getUserName())) {
 				database.addNewUser(newLogin);
 				try {
@@ -120,7 +119,7 @@ public class CheckersServer extends AbstractServer {
 			}
 			//User userToAdd = new User(1,newLogin.getUserName(), newLogin.getPassword());
 			//boolean added = databaseFile.addNewUser(userToAdd);
-			
+
 			/*
 			if (added) {
 				try {
@@ -138,13 +137,13 @@ public class CheckersServer extends AbstractServer {
 					e.printStackTrace();
 				}
 			}
-			*/
+			 */
 		}
 		if (message.contains("LOGIN")) {
 			String[] splitString = message.split(":");
 			String[] splitUserNameAndPassword = splitString[1].split(",");
 			LoginData userToVerify = new LoginData(splitUserNameAndPassword[0],splitUserNameAndPassword[1]);
-			
+
 			if (database.checkValidLoginData(userToVerify)) {
 				try {
 					arg1.sendToClient("LOGIN:TRUE");
@@ -161,7 +160,7 @@ public class CheckersServer extends AbstractServer {
 					e.printStackTrace();
 				}
 			}
-			
+
 			/*
 			if(databaseFile.verifyLoginInformation(userToVerify)) {
 				try {
@@ -169,7 +168,7 @@ public class CheckersServer extends AbstractServer {
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-					
+
 				}
 			}
 			else {
@@ -180,31 +179,31 @@ public class CheckersServer extends AbstractServer {
 					e.printStackTrace();
 				}
 			}
-			*/
+			 */
 		}
-		
-		
+
+
 	}
-	
+
 	public void listeningException(Throwable exception) {
 
 		this.status.setText("Exception Occurred when Listening");
 		this.status.setForeground(Color.red);
 		this.serverLog.append(exception.getMessage() + "\n");
 	}
-	
+
 	public void serverStarted() {
 		this.status.setText("Listening");
 		this.status.setForeground(Color.green);
 		this.serverLog.append("Server Started\n");
 	}
-	
+
 	public void serverStopped() {
 		this.status.setText("Stopped");
 		this.status.setForeground(Color.red);
 		this.serverLog.append("Server Stopped Accepting New Clients - Press Listen to Start Accepting New Clients\n");
 	}
-	
+
 	public void serverClosed() {
 		this.status.setText("Closed");
 		this.status.setForeground(Color.red);
