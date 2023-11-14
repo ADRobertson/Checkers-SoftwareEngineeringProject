@@ -115,7 +115,7 @@ public class Database {
 	public void addNewUser(LoginData loginData) {
 		try {
 			//executeDML("insert into chat_user values('" + loginData.getUserName() + "', aes_encrypt('"+loginData.getPassword()+"', 1))");
-			executeDML("insert into user values('" + loginData.getUserName() + "', aes_encrypt('"+loginData.getPassword()+"', 'key'))");
+			executeDML("insert into user values('" + loginData.getUserName() + "', aes_encrypt('"+loginData.getPassword()+"', 'key'), 0)");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
