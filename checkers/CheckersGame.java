@@ -101,7 +101,7 @@ public class CheckersGame {
 				
 				//if there are moves available, send them to the player
 				if (!possibleMoves.isEmpty()) {
-					server.sendMessageToClient("POSSIBLE:" + possibleMoves.get(0).toString() + ";" + possibleMoves.get(1), sender);
+					server.sendMessageToClient("POSSIBLE:" + possibleMoves.get(0).toString() + ";" + possibleMoves.get(1).toString(), sender);
 				}
 				//if there are no possible moves, send not possible
 				else if (possibleMoves.isEmpty()) {
@@ -138,7 +138,7 @@ public class CheckersGame {
 				
 				//if there are moves available, send them to the player
 				if (!possibleMoves.isEmpty()) {
-					server.sendMessageToClient("POSSIBLE:" + possibleMoves.get(0).toString() + ";" + possibleMoves.get(1), sender);
+					server.sendMessageToClient("POSSIBLE:" + possibleMoves.get(0).toString() + ";" + possibleMoves.get(1).toString(), sender);
 				}
 				//if there are no possible moves, send not possible
 				else if (possibleMoves.isEmpty()) {
