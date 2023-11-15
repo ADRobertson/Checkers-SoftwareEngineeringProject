@@ -66,7 +66,7 @@ public class CheckersServer extends AbstractServer {
 			game.processClick(rowAndCol[0], rowAndCol[1], arg1);
 			
 		}
-		else {
+		else if (message.contains("SELECT")){
 			//if input is made when the game isn't started, send error message
 			if (!game.isStarted()) {
 				try {
