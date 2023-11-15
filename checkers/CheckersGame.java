@@ -151,13 +151,13 @@ public class CheckersGame {
 				//from = null;
 				//send flipped version of move to playerOne
 				
-				server.sendMessageToClient("MOVE:" + from.toString() + ";" + cells[twoI][twoJ], playerOne);
+				server.sendMessageToClient("MOVE:" + from.toString() + ";" + cells[twoI][twoJ].toString(), playerOne);
 
 				//unflip the from variable to send to playerTwo
 				BoardCell mirroredFrom = cells[dictionary.get(from.getRow())][dictionary.get(from.getColumn())];
 
 				//send unflipped version of move to playerTwo
-				server.sendMessageToClient("MOVE:" + mirroredFrom.toString() + ";" + cells[i][j], playerTwo);
+				server.sendMessageToClient("MOVE:" + mirroredFrom.toString() + ";" + cells[i][j].toString(), playerTwo);
 				movePiece(cells[twoI][twoJ]);
 				flipTurns();
 				server.sendMessageToClient("END TURN", playerTwo);
