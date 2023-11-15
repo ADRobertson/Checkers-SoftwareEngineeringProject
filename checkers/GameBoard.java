@@ -149,6 +149,14 @@ public class GameBoard {
 		
 	}
 	
+	public void setPlayerNumber (boolean num) {
+		this.isPlayerOne = num;
+	}
+	
+	public boolean getPlayerNumber () {
+		return isPlayerOne;
+	}
+	
 	public void setFrom(BoardCell from) {
 		this.from = from;
 	}
@@ -309,34 +317,68 @@ public class GameBoard {
 				}
 				cells[i][j].addMouseListener(hoverEvents);
 				cells[i][j].addActionListener(cellAction);
-				if (i == 0 || i == 2) {
-					if (oddStartCells.contains(j)) {
-						cells[i][j].setIcon(greenPiece);
-						cells[i][j].setPieceColor(1);
-						cells[i][j].setPiece(true);
+				
+				if (isPlayerOne == true) {
+					if (i == 0 || i == 2) {
+						if (oddStartCells.contains(j)) {
+							cells[i][j].setIcon(greenPiece);
+							cells[i][j].setPieceColor(1);
+							cells[i][j].setPiece(true);
+						}
+					}
+					if (i==1) {
+						if (evenStartCells.contains(j)) {
+							cells[i][j].setIcon(greenPiece);
+							cells[i][j].setPieceColor(1);
+							cells[i][j].setPiece(true);
+						}
+					}
+					if (i == 5 || i == 7) {
+						if (evenStartCells.contains(j)) {
+							cells[i][j].setIcon(tanPiece);
+							cells[i][j].setPieceColor(0);
+							cells[i][j].setPiece(true);
+						}
+					}
+					if (i == 6) {
+						if (oddStartCells.contains(j)) {
+							cells[i][j].setIcon(tanPiece);
+							cells[i][j].setPieceColor(0);
+							cells[i][j].setPiece(true);
+						}
 					}
 				}
-				if (i==1) {
-					if (evenStartCells.contains(j)) {
-						cells[i][j].setIcon(greenPiece);
-						cells[i][j].setPieceColor(1);
-						cells[i][j].setPiece(true);
+				else {
+					if (i == 0 || i == 2) {
+						if (oddStartCells.contains(j)) {
+							cells[i][j].setIcon(tanPiece);
+							cells[i][j].setPieceColor(0);
+							cells[i][j].setPiece(true);
+						}
+					}
+					if (i==1) {
+						if (evenStartCells.contains(j)) {
+							cells[i][j].setIcon(tanPiece);
+							cells[i][j].setPieceColor(0);
+							cells[i][j].setPiece(true);
+						}
+					}
+					if (i == 5 || i == 7) {
+						if (evenStartCells.contains(j)) {
+							cells[i][j].setIcon(greenPiece);
+							cells[i][j].setPieceColor(1);
+							cells[i][j].setPiece(true);
+						}
+					}
+					if (i == 6) {
+						if (oddStartCells.contains(j)) {
+							cells[i][j].setIcon(greenPiece);
+							cells[i][j].setPieceColor(1);
+							cells[i][j].setPiece(true);
+						}
 					}
 				}
-				if (i == 5 || i == 7) {
-					if (evenStartCells.contains(j)) {
-						cells[i][j].setIcon(tanPiece);
-						cells[i][j].setPieceColor(0);
-						cells[i][j].setPiece(true);
-					}
-				}
-				if (i == 6) {
-					if (oddStartCells.contains(j)) {
-						cells[i][j].setIcon(tanPiece);
-						cells[i][j].setPieceColor(0);
-						cells[i][j].setPiece(true);
-					}
-				}
+				
 			}
 		}
 	}

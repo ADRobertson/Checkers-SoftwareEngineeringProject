@@ -22,6 +22,9 @@ public class ClientGUI extends JFrame{
 	//private JPanel mainWrapperPanel = new JPanel(cardLayout);
 	
 	
+	public GamePanel getGamePanel () {
+		return gamePlayView;
+	}
 	public void changeToMenuView() {
 		this.setContentPane(menuView);
 		this.invalidate();
