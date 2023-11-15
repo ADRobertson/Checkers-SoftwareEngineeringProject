@@ -26,7 +26,7 @@ public class CheckersServer extends AbstractServer {
 		this.status = status;
 		this.serverLog = log;
 		databaseFile = new DatabaseFile();
-		game = new CheckersGame();
+		game = new CheckersGame(this);
 	}
 
 	public void clientConnected(ConnectionToClient client) {
@@ -61,12 +61,21 @@ public class CheckersServer extends AbstractServer {
 		if (game.isStarted() && message.contains("SELECT")) {
 			Integer[] rowAndCol = parseRowAndColumn(message);
 			
-			for (Integer integer : rowAndCol) {
-				System.out.println(integer);
-			}
+			//this function will contain logic to process what to do with a click based on previous clicks.
+				//don't look too much into it
+			game.processClick(rowAndCol[0], rowAndCol[1], arg1);
+			
 		}
 		else {
-
+			//if input is made when the game isn't started, send error message
+			if (!game.isStarted()) {
+				try {
+					arg1.sendToClient("ERROR: GAME NOT STARTED");
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 		}
 
 		//if a client wants to host
@@ -209,5 +218,15 @@ public class CheckersServer extends AbstractServer {
 		this.status.setForeground(Color.red);
 		this.serverLog.append("Sever and all current clients are closed - Press Listen to Restart");
 	}
+	
+	public void sendMessageToClient(String message, ConnectionToClient receiever) {
+		try {
+			receiever.sendToClient(message);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 
 }

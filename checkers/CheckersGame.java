@@ -3,13 +3,16 @@ package checkers;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.BorderFactory;
 
 import ocsf.server.ConnectionToClient;
 
 public class CheckersGame {
+	private CheckersServer server;
 	//these will be used to color the cells of the board (don't know if this matters for the server yet)
 	private List<Integer> oddStartCells = Arrays.asList(new Integer[] {1,3,5,7});
 	private List<Integer> evenStartCells = Arrays.asList(new Integer[] {0,2,4,6});
@@ -19,28 +22,153 @@ public class CheckersGame {
 	//these will be used to verify who's turn it should be
 	private boolean playerOneTurn = false;
 	private boolean playerTwoTurn = false;
-	
+	private ConnectionToClient winningPlayer = null;
+	private List<BoardCell> possibleMoves = new ArrayList<BoardCell>();
+
 	//will store boardcells and also will have row and columns
 	private BoardCell[][] cells;
 	private int rows = 8;
 	private int columns = 8;
-	
+
 	//will be used to store selected from piece
 	private BoardCell from;
-	
+
 	//will be changed to true when a second player joins
 	private boolean started = false;
-	
-	public void processClick(int i, int j, ConnectionToClient sender) {
-		//if it's the senders turn
-			//if selected cell has piece and is the color of the sender
-				//select that cell by making the from board cell equal to that
-				//send back determine potential moves so that the user can make the next choice.
-			//else if selected cell doesn't have a piece and is in the determined moves and from is not null
-				//move the from piece to passed board cell (if it's player two this logic might change)
+	//used to mirror moves to the other side of the board (will need to be done for all player two input...)
+	private Map<Integer, Integer> dictionary = new HashMap<>();
+
+	public boolean getPlayerOneTurn() {
+		return playerOneTurn;
+	}
+
+	public boolean getPlayerTwoTurn() {
+		return playerTwoTurn;
+	}
+
+	public void flipTurns() {
+		playerOneTurn = !playerOneTurn;
+		playerTwoTurn = !playerTwoTurn;
+	}
+
+	public void fillTranslationDictionary() {
+		dictionary.put(7,0);
+		dictionary.put(6,1);
+		dictionary.put(5, 2);
+		dictionary.put(4, 3);
+		dictionary.put(3, 4);
+		dictionary.put(2, 5);
+		dictionary.put(1, 6);
+		dictionary.put(0, 7);
 	}
 	
-	public String determinePotentialMoves() {
+	public void removePiece(BoardCell pieceRemoved) {
+		pieceRemoved.setIcon(null);
+		pieceRemoved.setPiece(false);
+	}
+	
+	public void movePiece(BoardCell to) {
+		if (from.getPieceColor() == 0) {
+			from.setIcon(null);
+			from.setPiece(false);
+			to.setPieceColor(0);
+			to.setPiece(true);
+			from = null;
+			to = null;
+		}
+		else if (from.getPieceColor()==1) {
+			from.setIcon(null);
+			from.setPiece(false);
+			to.setPieceColor(1);
+			to.setPiece(true);
+			from = null;
+			to = null;
+		}
+		
+	}
+	
+	
+	//might need to return object here.
+	public Object processClick(int i, int j, ConnectionToClient sender) {
+		//if it's the senders turn
+		if (sender == playerOne && playerOneTurn == true) {
+			//if selected cell has piece and is the color of the sender
+			if (cells[i][j].hasPiece() && cells[i][j].getPieceColor() == 0) {
+				//select that cell by making the from board cell equal to that
+				from = cells[i][j];
+				//send back determine potential moves so that the user can make the next choice.
+				possibleMoves = determinePotentialMoves();
+				
+				//if there are moves available, send them to the player
+				if (!possibleMoves.isEmpty()) {
+					server.sendMessageToClient("POSSIBLE:" + possibleMoves.get(0).toString() + ";" + possibleMoves.get(1), sender);
+				}
+				//if there are no possible moves, send not possible
+				else if (possibleMoves.isEmpty()) {
+					server.sendMessageToClient("NOT POSSIBLE", sender);
+				}
+			}
+			//if they have a selected piece and they are sending a cells that is in possible moves
+			if (from != null && possibleMoves.contains(cells[i][j])) {
+				//server.sendMoveToClients(sender, from, cells[i][j], true);
+				//from = null;
+				//send the exact move to playerOne
+				server.sendMessageToClient("MOVE:" + from.toString() + ";" + cells[i][j].toString(), playerOne);
+				//otherwise mirror move and send to playerTwo
+				BoardCell mirroredFrom = cells[dictionary.get(from.getRow())][dictionary.get(from.getColumn())];
+				BoardCell mirroredTo = cells[dictionary.get(i)][dictionary.get(j)];
+				
+				server.sendMessageToClient("MOVE:" + mirroredFrom.toString() + ";" + mirroredTo.toString(), playerTwo);
+				movePiece(cells[i][j]);
+				flipTurns();
+				server.sendMessageToClient("END TURN", playerOne);
+				server.sendMessageToClient("YOUR TURN", playerTwo);
+			}
+
+		}
+		else if (sender == playerTwo && playerTwoTurn == true) {
+			//need to mirror the move for player two so that the server can keep track of things...
+			Integer twoI = dictionary.get(i);
+			Integer twoJ = dictionary.get(j);
+			if (cells[twoI][twoJ].hasPiece() && cells[twoI][twoJ].getPieceColor() == 1) {
+				from = cells[twoI][twoJ];
+
+				//send back determine potential moves so that the user can make the next choice
+				possibleMoves = determinePotentialMoves();
+				
+				//if there are moves available, send them to the player
+				if (!possibleMoves.isEmpty()) {
+					server.sendMessageToClient("POSSIBLE:" + possibleMoves.get(0).toString() + ";" + possibleMoves.get(1), sender);
+				}
+				//if there are no possible moves, send not possible
+				else if (possibleMoves.isEmpty()) {
+					server.sendMessageToClient("NOT POSSIBLE", sender);
+				}
+			}
+			// if from is selected for playerTwo and possible moves contains the flipped version of their selection then process.
+			if (from != null && possibleMoves.contains(cells[twoI][twoJ])) {
+				//server.sendMoveToClients(sender, from, cells[dictionary.get(i)][dictionary.get(j)], true);
+				//from = null;
+				//send flipped version of move to playerOne
+				
+				server.sendMessageToClient("MOVE:" + from.toString() + ";" + cells[twoI][twoJ], playerOne);
+
+				//unflip the from variable to send to playerTwo
+				BoardCell mirroredFrom = cells[dictionary.get(from.getRow())][dictionary.get(from.getColumn())];
+
+				//send unflipped version of move to playerTwo
+				server.sendMessageToClient("MOVE:" + mirroredFrom.toString() + ";" + cells[i][j], playerTwo);
+				movePiece(cells[twoI][twoJ]);
+				flipTurns();
+				server.sendMessageToClient("END TURN", playerTwo);
+				server.sendMessageToClient("YOUR TURN", playerOne);
+				
+			}
+		}
+		return null;
+	}
+
+	public List<BoardCell> determinePotentialMoves() {
 		int i = from.getRow();
 		int j = from.getColumn();
 		boolean leftIsPossible = false;
@@ -50,27 +178,29 @@ public class CheckersGame {
 		List<BoardCell> potentialMoves = new ArrayList<BoardCell>();
 		BoardCell rightMove = null;
 		BoardCell leftMove = null;
-		try {
-			leftMove = cells[i-1][j-1];
-		} catch(Exception e) {		
-			System.out.println("couldn't get left move");
-		}
-		try {
-			rightMove = cells[i-1][j+1];
-		} catch (Exception e) {
-			System.out.println("couldn't get right move");
-			
-		}
-		
+
+
 		//if tan (player) piece
 		if (from.getPieceColor() == 0) {
+			try {
+				leftMove = cells[i-1][j-1];
+			} catch(Exception e) {		
+				System.out.println("couldn't get left move");
+			}
+			try {
+				rightMove = cells[i-1][j+1];
+			} catch (Exception e) {
+				System.out.println("couldn't get right move");
+
+			}
 			//if the piece is a king
 			if (from.isKing()) {
-				
+
 			}
 			//if the piece is a normal piece
 			else if (!from.isKing()) {
 				if (leftMove != null && leftMove.hasPiece()) {
+					/*
 					if (leftMove.getPieceColor() == 0) {
 						leftIsPossible = false;
 					}
@@ -80,12 +210,14 @@ public class CheckersGame {
 						if (!leftMove.hasPiece()) {
 							leftIsPossible = true;
 						}
-					}
+					} */
+					leftIsPossible = false;
 				}
 				else if (leftMove!=null){
 					leftIsPossible = true;
 				}
 				if (rightMove != null && rightMove.hasPiece()) {
+					/*
 					if (rightMove.getPieceColor() == 0) {
 						rightIsPossible = false;
 					}
@@ -95,12 +227,47 @@ public class CheckersGame {
 						if (!rightMove.hasPiece()) {
 							rightIsPossible = true;
 						}
-					}
+					} */
+					rightIsPossible = false;
 				}
 				else if (rightMove !=null) {
 					rightIsPossible = true;
 				}
 			}
+		}
+		//if it's a green piece
+		else if (from.getPieceColor() == 1) {
+			try {
+				leftMove = cells[i+1][j+1];
+			} catch(Exception e) {		
+				System.out.println("couldn't get left move");
+			}
+			try {
+				rightMove = cells[i+1][j-1];
+			} catch (Exception e) {
+				System.out.println("couldn't get right move");
+
+			}
+			
+			if (from.isKing()) {
+				
+			}
+			else if (!from.isKing()) {
+				if (leftMove != null && leftMove.hasPiece()) {
+					leftIsPossible = false;
+				}
+				else if (leftMove != null) {
+					leftIsPossible = true;
+				}
+				
+				if (rightMove != null && rightMove.hasPiece()) {
+					rightIsPossible = false;
+				}
+				else if (rightMove != null) {
+					rightIsPossible = true;
+				}
+			}
+
 		}
 		if (rightIsPossible) {
 			potentialMoves.add(rightMove);
@@ -108,14 +275,14 @@ public class CheckersGame {
 		if (leftIsPossible) {
 			potentialMoves.add(leftMove);
 		}
-		
+
 		//for (BoardCell boardCell : potentialMoves) {
-			//boardCell.setBorder(BorderFactory.createLineBorder(Color.YELLOW));
-			//boardCell.setBackground(highLightColor);
+		//boardCell.setBorder(BorderFactory.createLineBorder(Color.YELLOW));
+		//boardCell.setBackground(highLightColor);
 		//}
-		return null;
+		return potentialMoves;
 	}
-	
+
 	public void buildBoard() {
 		cells = new BoardCell[rows][columns];
 		boolean red = false;
@@ -158,13 +325,13 @@ public class CheckersGame {
 				}
 			}
 		}
-		
+
 	}
-	
+
 	public boolean isStarted() {
 		return started;
 	}
-	
+
 	public boolean isHosted() {
 		if (playerOne == null) {
 			return false;
@@ -173,7 +340,7 @@ public class CheckersGame {
 			return true;
 		}
 	}
-	
+
 	public void setPlayer(ConnectionToClient player) {
 		if (playerOne == null) {
 			playerOne = player;
@@ -181,34 +348,40 @@ public class CheckersGame {
 		}
 		else if (playerTwo == null) {
 			playerTwo = player;
+			//the below code actually starts the game by flipping playerOneTurn to true and sending out a message to both clients
 			started = true;
+			playerOneTurn = true;
+			server.sendMessageToClient("YOUR TURN", playerOne);
+			server.sendMessageToClient("END TURN", playerTwo);
 		}
 	}
-	
+
 	public boolean isPlayerOneTurn() {
 		return playerOneTurn;
 	}
-	
+
 	public boolean isPlayerTwoTurn() {
 		return playerTwoTurn;
 	}
-	
+
 	public void setPlayerOneTurn(boolean turn) {
 		playerOneTurn = turn;
 	}
-	
+
 	public void setPlayerTwoTurn(boolean turn) {
 		playerTwoTurn = turn;
 	}
-	
+
 	public ConnectionToClient getPlayerOne() {
 		return playerOne;
 	}
-	
+
 	public ConnectionToClient getPlayerTwo() {
 		return playerTwo;
 	}
-	public CheckersGame() {
+	public CheckersGame(CheckersServer server) {
+		this.server = server;
+		fillTranslationDictionary();
 		buildBoard();
 	}
 }
