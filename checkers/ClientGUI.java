@@ -58,6 +58,7 @@ public class ClientGUI extends JFrame{
 	}
 	
 	public ClientGUI() {
+		this.setSize(600,600);
 		client= new CheckersClient(this);
 		initialView = new InitialPanel(this);
 		loginView = new LoginPanel(this);
@@ -90,7 +91,8 @@ public class ClientGUI extends JFrame{
 		changeToInitialView();
 		
 		this.setVisible(true);
-		this.setSize(600,350);
+		this.setResizable(false);
+		
 		this.addWindowListener(new WindowAdapter() {
 	    	public void windowClosing(WindowEvent e) {
 	    		try {

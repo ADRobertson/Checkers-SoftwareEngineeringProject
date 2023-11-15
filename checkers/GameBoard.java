@@ -282,7 +282,7 @@ public class GameBoard {
 				}
 				else if (!clickedCell.hasPiece() && parent.getBoard().getFrom() != null) {
 					//parent.getBoard().movePiece(clickedCell);
-				}
+					parent.getParent().getChatClient().sendSelectedCell(clickedCell);				}
 			}
 		};
 	}
@@ -303,7 +303,7 @@ public class GameBoard {
 				}
 				cells[i][j].setBorder(BorderFactory.createLineBorder(Color.WHITE));
 				red = !red;
-				//if we are on last swap the color so that it stays the same...
+				//if we are on last coumn swap the color so that it stays the same on the first column of the next row...
 				if (j == columns-1) {
 					red = !red;
 				}
