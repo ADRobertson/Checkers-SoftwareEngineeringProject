@@ -26,12 +26,18 @@ public class MenuController {
 		hostGameButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				client.sendHostGame();
+				parent.getGamePanel().getBoard().setPlayerNumber(true);
+				parent.getGamePanel().buildBoard();
+				parent.getGamePanel().addBoard();
 			}
 		});
 		
 		joinGameButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				client.sendJoinGame();
+				parent.getGamePanel().getBoard().setPlayerNumber(false);
+				parent.getGamePanel().buildBoard();
+				parent.getGamePanel().addBoard();
 			}
 		});
 	}

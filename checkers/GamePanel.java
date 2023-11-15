@@ -52,6 +52,14 @@ public class GamePanel extends JPanel{
 	public ClientGUI getParent() {
 		return parent;
 	}
+	
+	public void buildBoard() {
+		board.buildBoard();
+	}
+	
+	public void addBoard() {
+		board.addBoard();
+	}
 
 	
 	public GamePanel(ClientGUI parent, GameSidePanel sidePanel) {
@@ -60,8 +68,6 @@ public class GamePanel extends JPanel{
 		this.sidePanel = sidePanel;
 		setLayout(new GridLayout(8,8));
 		this.board = new GameBoard(true, this);
-		board.buildBoard();
-		board.addBoard();;
 		}
 		//cells[4][4].setBackground(Color.BLACK);
 		//cells[3][3].setBackground(Color.WHITE);//top left
