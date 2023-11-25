@@ -1,4 +1,3 @@
-//testtest
 package checkers;
 
 import java.io.FileInputStream;
@@ -12,6 +11,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Properties;
+
+import ocsf.server.ConnectionToClient;
 
 public class Database {
 	private Connection conn;
@@ -112,7 +113,6 @@ public class Database {
 		return false;
 	}
 	
-	
 	public void addNewUser(LoginData loginData) {
 		try {
 			//executeDML("insert into chat_user values('" + loginData.getUserName() + "', aes_encrypt('"+loginData.getPassword()+"', 1))");
@@ -122,6 +122,7 @@ public class Database {
 			e.printStackTrace();
 		}
 	}
+	
 	public ArrayList<String> query(String query)
 	{
 		//Using the conn object create a statement object
@@ -158,6 +159,17 @@ public class Database {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
+		}
+	}
+	
+	public void addWin(String username) {
+		
+		// Add 1 to the number of wins
+		try {
+			executeDML("UPDATE `user` SET no_wins = no_wins + 1 WHERE username = \"" + username + "\";");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 	
