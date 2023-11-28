@@ -1,6 +1,7 @@
 package checkers;
 
 import java.awt.Color;
+import java.awt.Font;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -50,16 +51,19 @@ public class LoginPanel extends JPanel{
 	public LoginPanel(ClientGUI clientGUI) {
 		setLayout(null);
 		//setLayout();
-		
+		this.setBackground(new Color(200,170,130));
 		titleLabel = new JLabel("Enter Your Username and Password to Log In");
+		titleLabel.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		titleLabel.setBounds(74, 50, 292, 14);
 		add(titleLabel);
 		
 		userNameLabel = new JLabel("Username:");
+		userNameLabel.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		userNameLabel.setBounds(111, 78, 98, 14);
 		add(userNameLabel);
 		
 		passwordLabel = new JLabel("Password:");
+		passwordLabel.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		passwordLabel.setBounds(111, 106, 98, 14);
 		add(passwordLabel);
 		
@@ -74,10 +78,14 @@ public class LoginPanel extends JPanel{
 		passwordTextField.setColumns(10);
 		
 		submitButton = new JButton("Submit");
+		submitButton.setForeground(new Color(1,50,32));
+		submitButton.setBackground(new Color(215,185,145));
 		submitButton.setBounds(132, 131, 77, 23);
 		add(submitButton);
 		
 		cancelButton = new JButton("Cancel");
+		cancelButton.setForeground(new Color(1,50,32));
+		cancelButton.setBackground(new Color(215,185,145));
 		cancelButton.setBounds(219, 131, 86, 23);
 		add(cancelButton);
 		

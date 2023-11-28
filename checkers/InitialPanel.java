@@ -1,5 +1,8 @@
 package checkers;
 
+import java.awt.Color;
+import java.awt.Font;
+
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -24,18 +27,24 @@ public class InitialPanel extends JPanel{
 	
 	
 	public InitialPanel(ClientGUI clientGUI) {
-		//setLayout(null);
+		this.setBackground(new Color(200,170,130));
 		this.parent = clientGUI;
+		setLayout(null);
 		titleLabel = new JLabel("Account Information");
-		titleLabel.setBounds(152, 22, 105, 40);
+		titleLabel.setBounds(102, 44, 255, 40);
+		titleLabel.setFont(new Font("Tahoma", Font.PLAIN, 24));
 		add(titleLabel);
 		
 		loginButton = new JButton("Login");
-		loginButton.setBounds(162, 73, 89, 23);
+		loginButton.setBounds(167, 95, 89, 23);
+		loginButton.setForeground(new Color(1,50,32));
+		loginButton.setBackground(new Color(215,185,145));
 		add(loginButton);
 		
 		createButton= new JButton("Create");
-		createButton.setBounds(172, 107, 89, 23);
+		createButton.setBounds(167, 129, 89, 23);
+		createButton.setForeground(new Color(1,50,32));
+		createButton.setBackground(new Color(215,185,145));
 		add(createButton);
 		
 		controller = new InitialController(this, parent);

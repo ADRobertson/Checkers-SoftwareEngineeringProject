@@ -1,5 +1,8 @@
 package checkers;
 
+import java.awt.Color;
+import java.awt.Font;
+
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -52,56 +55,72 @@ public class CreateAccountPanel extends JPanel{
 	public CreateAccountPanel(ClientGUI clientGUI) {
 		setLayout(null);
 		this.parent = clientGUI;
-		
+		this.setBackground(new Color(200,170,130));
+		/*
 		titleLabels[0] = new JLabel("Enter a Username and Password to Create an Account.");
-		titleLabels[0].setBounds(89, 32, 300, 14);
+		titleLabels[0].setFont(new Font("Tahoma", Font.PLAIN, 24));
+		titleLabels[0].setBounds(89, 32, 300, 50);
 		add(titleLabels[0]);
 		
 		titleLabels[1] = new JLabel("Your Password Must Be At Least 6 Characters");
+		titleLabels[1].setFont(new Font("Tahoma", Font.PLAIN, 12));
 		titleLabels[1].setBounds(110, 57, 300, 14);
 		add(titleLabels[1]);
+		*/
 		
 		userNameLabel = new JLabel("Username:");
-		userNameLabel.setBounds(89, 82, 99, 14);
+		userNameLabel.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		userNameLabel.setBounds(134, 111, 99, 14);
 		add(userNameLabel);
 		
 		passwordLabel = new JLabel("Password:");
-		passwordLabel.setBounds(89, 107, 70, 14);
+		passwordLabel.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		passwordLabel.setBounds(134, 136, 70, 14);
 		add(passwordLabel);
 		
 		verifyPasswordLabel= new JLabel("Verify Password:");
-		verifyPasswordLabel.setBounds(70, 132, 108, 14);
+		verifyPasswordLabel.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		verifyPasswordLabel.setBounds(115, 161, 108, 14);
 		add(verifyPasswordLabel);
 		
 		userNameTextField = new JTextField();
-		userNameTextField.setBounds(188, 82, 86, 20);
+		userNameTextField.setBounds(233, 111, 86, 20);
 		add(userNameTextField);
 		userNameTextField.setColumns(10);
 		
 		passwordTextField = new JPasswordField();
-		passwordTextField.setBounds(188, 107, 86, 20);
+		passwordTextField.setBounds(233, 136, 86, 20);
 		add(passwordTextField);
 		passwordTextField.setColumns(10);
 		
 		verifyPasswordTextField = new JPasswordField();
-		verifyPasswordTextField.setBounds(188, 132, 86, 20);
+		verifyPasswordTextField.setBounds(233, 161, 86, 20);
 		add(verifyPasswordTextField);
 		verifyPasswordTextField.setColumns(10);
 		
 		submitButton = new JButton("Submit");
-		submitButton.setBounds(110, 157, 89, 23);
+		submitButton.setForeground(new Color(1,50,32));
+		submitButton.setBackground(new Color(215,185,145));
+		submitButton.setBounds(145, 186, 89, 23);
 		add(submitButton);
 		
 		cancelButton = new JButton("Cancel");
-		cancelButton.setBounds(209, 157, 89, 23);
+		cancelButton.setForeground(new Color(1,50,32));
+		cancelButton.setBackground(new Color(215,185,145));
+		cancelButton.setBounds(243, 186, 89, 23);
 		add(cancelButton);
 		
 		statusMessageLabel = new JLabel("");
-		statusMessageLabel.setBounds(132, 49, 166, 14);
+		statusMessageLabel.setBounds(153, 74, 166, 14);
 		add(statusMessageLabel);
 		this.client = parent.getChatClient();
 		
 		controller = new CreateAccountController(this, parent, client);
+		
+		JLabel lblNewLabel = new JLabel("Enter a Username and Password to Create an Account.");
+		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		lblNewLabel.setBounds(79, 33, 311, 51);
+		add(lblNewLabel);
 		
 		
 	}
