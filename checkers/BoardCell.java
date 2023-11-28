@@ -56,6 +56,10 @@ public class BoardCell extends JButton{
 		return pieceIsKing;
 	}
 	
+	public void setKing(boolean kingStatus) {
+		pieceIsKing = kingStatus;
+	}
+	
 	public String toString() {
 		return "(" + row + "," + column+")";
 	}

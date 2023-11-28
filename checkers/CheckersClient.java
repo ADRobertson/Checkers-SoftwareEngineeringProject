@@ -33,7 +33,7 @@ public class CheckersClient extends AbstractClient{
 	public void handleMessageFromServer(Object arg0) {
 		System.out.println("Server Message Sent to Client: " + arg0);
 		String test = arg0.toString();
-		System.out.println(test.contains("username"));
+		//System.out.println(test.contains("username"));
 		if(test.contains("HOSTED")) {
 			parent.changeToGameView();
 		}
@@ -66,7 +66,10 @@ public class CheckersClient extends AbstractClient{
 		if (test.equals("NEW:FALSE")) {
 			createAccountView.userNameError("Username Already In Use");
 		}
-		if (test.contains("POSSIBLE")) {
+		if (test.equals("NOT POSSIBLE")) {
+			parent.getGamePanel().getBoard().unHighlightPotentialMoves();
+		}
+		else if (test.contains("POSSIBLE")) {
 			parent.getGamePanel().getBoard().unHighlightPotentialMoves();
 			if (test.contains(";")) {
 				String[] temp = test.split(":",2);
@@ -82,9 +85,7 @@ public class CheckersClient extends AbstractClient{
 			}
 			
 		}
-		if (test.equals("NOT POSSIBLE")) {
-			parent.getGamePanel().getBoard().unHighlightPotentialMoves();
-		}
+		
 		if (test.contains("MOVE")) {
 			System.out.println("Move Detected");
 			
