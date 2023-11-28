@@ -64,6 +64,51 @@ public class CheckersClient extends AbstractClient{
 		if (test.equals("NEW:FALSE")) {
 			createAccountView.userNameError("Username Already In Use");
 		}
+		if (test.contains("POSSIBLE")) {
+			String[] temp = test.split(":",2);
+			String[] cells = temp[1].split(";");
+			
+			for (int i = 0; i < cells.length; i++) {
+				parent.getGamePanel().getBoard().highlightPotentialMoves(cells[i]);
+			}
+		}
+		if (test.equals("NOT POSSIBLE")) {
+			parent.getGamePanel().getBoard().unHighlightPotentialMoves();
+		}
+		if (test.contains("MOVE")) {
+			String[] temp = test.split(":",2);
+			String[] cells = temp[1].split(";",2);
+			
+			int[] coordinatesFrom = parseCoordinates(cells[0]);
+			int[] coordinatesTo = parseCoordinates(cells[1]);
+			
+			BoardCell[][] allCells = parent.getGamePanel().getBoard().getCells();
+			BoardCell from = allCells[coordinatesFrom[0]][coordinatesFrom[1]];
+			BoardCell to = allCells[coordinatesTo[0]][coordinatesTo[1]];
+			
+			parent.getGamePanel().getBoard().setFrom(from);
+			parent.getGamePanel().getBoard().setTo(to);
+			
+			parent.getGamePanel().getBoard().movePiece(to);
+		}
+		if (test.equals("YOUR TURN")) {
+			parent.getGameSidePanel().setTurnLabel("Your Turn");
+		}
+		if (test.equals("END TURN")) {
+			parent.getGameSidePanel().setTurnLabel("End Turn");
+		}
+	}
+	
+	public int[] parseCoordinates(String cell) {
+		String[] coordinates = cell.split(",",2);
+		coordinates[0] = coordinates[0].replaceAll("[^0-9]", "");
+		coordinates[1] = coordinates[1].replaceAll("[^0-9]", "");
+		
+		int[] newCoordinates = new int[]{0};
+		newCoordinates[0] = Integer.parseInt(coordinates[0]);
+		newCoordinates[1] = Integer.parseInt(coordinates[1]);
+		
+		return newCoordinates;
 	}
 	
 	public void connectionException(Throwable exception) {

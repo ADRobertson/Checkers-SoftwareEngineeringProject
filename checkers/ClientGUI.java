@@ -25,6 +25,9 @@ public class ClientGUI extends JFrame{
 	public GamePanel getGamePanel () {
 		return gamePlayView;
 	}
+	public GameSidePanel getGameSidePanel() {
+		return gameInfoView;
+	}
 	public void changeToMenuView() {
 		this.setContentPane(menuView);
 		this.invalidate();

@@ -16,6 +16,7 @@ public class GameSidePanel extends JPanel{
 	private ClientGUI parent;
 	private JLabel piecesTakenLabel;
 	private JLabel piecesTakenCounterLabel;
+	private JLabel turnLabel;
 	private JButton logOutButton;
 	private Integer piecesTaken = 0;
 	
@@ -23,6 +24,14 @@ public class GameSidePanel extends JPanel{
 	public void pieceTaken() {
 		piecesTaken++;
 		piecesTakenCounterLabel.setText(piecesTaken.toString());
+	}
+	
+	public void setTurnLabel(String text) {
+		turnLabel.setText(text);
+	}
+	
+	public String getTurnLabel() {
+		return turnLabel.getText();
 	}
 	
 	public GameSidePanel(ClientGUI parent) {
@@ -50,6 +59,11 @@ public class GameSidePanel extends JPanel{
 				parent.changeToLoginView();
 			}
 		});
-		add(logOutButton);;
+		add(logOutButton);
+		
+		turnLabel = new JLabel("Game Not Started");
+		turnLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		turnLabel.setBounds(10, 280, 100, 15);
+		add(turnLabel);;
 	}
 }

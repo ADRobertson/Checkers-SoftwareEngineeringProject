@@ -149,6 +149,10 @@ public class GameBoard {
 		
 	}
 	
+	public BoardCell[][] getCells() {
+		return cells;
+	}
+	
 	public void setPlayerNumber (boolean num) {
 		this.isPlayerOne = num;
 	}
@@ -167,6 +171,14 @@ public class GameBoard {
 	
 	public void setTo(BoardCell to) {
 		this.to = to;
+	}
+	
+	public void highlightPotentialMoves(String cell) {
+		String[] coordinates = cell.split(",",2);
+		coordinates[0] = coordinates[0].replaceAll("[^0-9]", "");
+		coordinates[1] = coordinates[1].replaceAll("[^0-9]", "");
+		
+		cells[Integer.parseInt(coordinates[0])][Integer.parseInt(coordinates[1])].setBackground(highLightColor);
 	}
 	
 	public void unHighlightPotentialMoves() {
