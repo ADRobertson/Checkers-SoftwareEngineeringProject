@@ -169,26 +169,6 @@ public class CheckersServer extends AbstractServer {
 					e.printStackTrace();
 				}
 			}
-
-			/*
-			if(databaseFile.verifyLoginInformation(userToVerify)) {
-				try {
-					arg1.sendToClient("LOGIN:TRUE");
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-
-				}
-			}
-			else {
-				try {
-					arg1.sendToClient("LOGIN:FALSE");
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-			 */
 		}
 
 

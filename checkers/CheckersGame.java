@@ -101,7 +101,13 @@ public class CheckersGame {
 				
 				//if there are moves available, send them to the player
 				if (!possibleMoves.isEmpty()) {
-					server.sendMessageToClient("POSSIBLE:" + possibleMoves.get(0).toString() + ";" + possibleMoves.get(1).toString(), sender);
+					//server.sendMessageToClient("POSSIBLE:" + possibleMoves.get(0).toString() + ";" + possibleMoves.get(1).toString(), sender);
+					if (possibleMoves.size() == 2) {
+						server.sendMessageToClient("POSSIBLE:" + possibleMoves.get(0).toString() + ";" + possibleMoves.get(1).toString(), sender);
+					}
+					else if (possibleMoves.size() == 1) {
+						server.sendMessageToClient("POSSIBLE:" + possibleMoves.get(0).toString(), sender);
+					}
 				}
 				//if there are no possible moves, send not possible
 				else if (possibleMoves.isEmpty()) {
@@ -138,7 +144,18 @@ public class CheckersGame {
 				
 				//if there are moves available, send them to the player
 				if (!possibleMoves.isEmpty()) {
-					server.sendMessageToClient("POSSIBLE:" + possibleMoves.get(0).toString() + ";" + possibleMoves.get(1).toString(), sender);
+					
+					//will have to flip potential moves before sending back to player two? since they are seeing a non-flipped version of their gamestate???
+					if (possibleMoves.size() == 2) {
+						BoardCell flippedPossibleMove = cells[dictionary.get(possibleMoves.get(0).getRow())][dictionary.get(possibleMoves.get(0).getColumn())];
+						BoardCell flippedPossibleMove2 = cells[dictionary.get(possibleMoves.get(1).getRow())][dictionary.get(possibleMoves.get(1).getColumn())];
+						server.sendMessageToClient("POSSIBLE:" + flippedPossibleMove.toString() + ";" + flippedPossibleMove2.toString(), sender);
+					}
+					else if (possibleMoves.size() == 1) {
+						BoardCell flippedPossibleMove = cells[dictionary.get(possibleMoves.get(0).getRow())][dictionary.get(possibleMoves.get(0).getColumn())];
+						server.sendMessageToClient("POSSIBLE:" + flippedPossibleMove.toString(), sender);
+					}
+					//server.sendMessageToClient("POSSIBLE:" + possibleMoves.get(0).toString() + ";" + possibleMoves.get(1).toString(), sender);
 				}
 				//if there are no possible moves, send not possible
 				else if (possibleMoves.isEmpty()) {

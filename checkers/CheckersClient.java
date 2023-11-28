@@ -1,6 +1,8 @@
 package checkers;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import ocsf.client.AbstractClient;
 
@@ -65,17 +67,46 @@ public class CheckersClient extends AbstractClient{
 			createAccountView.userNameError("Username Already In Use");
 		}
 		if (test.contains("POSSIBLE")) {
-			String[] temp = test.split(":",2);
-			String[] cells = temp[1].split(";");
-			
-			for (int i = 0; i < cells.length; i++) {
-				parent.getGamePanel().getBoard().highlightPotentialMoves(cells[i]);
+			parent.getGamePanel().getBoard().unHighlightPotentialMoves();
+			if (test.contains(";")) {
+				String[] temp = test.split(":",2);
+				String[] cells = temp[1].split(";");
+				
+				for (int i = 0; i < cells.length; i++) {
+					parent.getGamePanel().getBoard().highlightPotentialMoves(cells[i]);
+				}
 			}
+			else {
+				String[] temp = test.split(":");
+				parent.getGamePanel().getBoard().highlightPotentialMoves(temp[1]);
+			}
+			
 		}
 		if (test.equals("NOT POSSIBLE")) {
 			parent.getGamePanel().getBoard().unHighlightPotentialMoves();
 		}
 		if (test.contains("MOVE")) {
+			System.out.println("Move Detected");
+			
+			String[] temp = test.split(":");
+			String[] coords = temp[1].split(";");
+			
+			List<Integer> cellCoords = new ArrayList<Integer>();
+			
+			for (int i = 0; i < coords.length; i++) {
+				String[] splitCoords = coords[i].split(",");
+				
+				splitCoords[0] = splitCoords[0].replace("(", "");
+				splitCoords[1] = splitCoords[1].replace(")", "");
+			
+				
+				cellCoords.add(Integer.parseInt(splitCoords[0]));
+				cellCoords.add(Integer.parseInt(splitCoords[1]));
+			}
+			
+			parent.getGamePanel().getBoard().move(cellCoords.get(0), cellCoords.get(1), cellCoords.get(2), cellCoords.get(3));
+			
+			/*
 			String[] temp = test.split(":",2);
 			String[] cells = temp[1].split(";",2);
 			
@@ -85,11 +116,14 @@ public class CheckersClient extends AbstractClient{
 			BoardCell[][] allCells = parent.getGamePanel().getBoard().getCells();
 			BoardCell from = allCells[coordinatesFrom[0]][coordinatesFrom[1]];
 			BoardCell to = allCells[coordinatesTo[0]][coordinatesTo[1]];
+			System.out.println("From: " + from.toString());
+			System.out.println("To: " + to.toString());
 			
 			parent.getGamePanel().getBoard().setFrom(from);
 			parent.getGamePanel().getBoard().setTo(to);
 			
 			parent.getGamePanel().getBoard().movePiece(to);
+			*/
 		}
 		if (test.equals("YOUR TURN")) {
 			parent.getGameSidePanel().setTurnLabel("Your Turn");
@@ -97,6 +131,7 @@ public class CheckersClient extends AbstractClient{
 		if (test.equals("END TURN")) {
 			parent.getGameSidePanel().setTurnLabel("End Turn");
 		}
+		
 	}
 	
 	public int[] parseCoordinates(String cell) {

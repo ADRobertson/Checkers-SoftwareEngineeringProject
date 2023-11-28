@@ -34,6 +34,27 @@ public class GameBoard {
 	private GamePanel parent;
 	private Map<Integer, Integer> dictionary = new HashMap<>();
 	
+	public void move(int fromRow, int fromColumn, int toRow, int toColumn) {
+		BoardCell from = cells[fromRow][fromColumn];
+		BoardCell to = cells[toRow][toColumn];
+		
+		from.setIcon(null);
+		from.setPiece(false);
+		
+		if (from.getPieceColor() == 1) {
+			to.setIcon(greenPiece);
+			to.setPieceColor(1);
+			to.setPiece(true);
+		}
+		else if (from.getPieceColor() == 0) {
+			to.setIcon(tanPiece);
+			to.setPieceColor(0);
+			to.setPiece(true);
+		}
+		
+		unHighlightPotentialMoves();
+	}
+	
 	public void fillTranslationDictionary() {
 		dictionary.put(7,0);
 		dictionary.put(6,1);
@@ -292,7 +313,10 @@ public class GameBoard {
 			public void actionPerformed(ActionEvent e) {
 				BoardCell clickedCell = (BoardCell)e.getSource();
 				GamePanel parent = (GamePanel)clickedCell.getParent();
+				
+				parent.getParent().getChatClient().sendSelectedCell(clickedCell);
 				//if ()
+				/*
 				if (clickedCell.hasPiece()) {
 					//parent.getBoard().setFrom(clickedCell);
 					//parent.getBoard().unHighlightPotentialMoves();
@@ -303,6 +327,7 @@ public class GameBoard {
 				else if (!clickedCell.hasPiece() && parent.getBoard().getFrom() != null) {
 					//parent.getBoard().movePiece(clickedCell);
 					parent.getParent().getChatClient().sendSelectedCell(clickedCell);				}
+					*/
 			}
 		};
 	}
