@@ -24,6 +24,8 @@ public class GameBoard {
 	private ActionListener cellAction;
 	private ImageIcon greenPiece = new ImageIcon(GamePanel.class.getResource("greenPiece.png"));
 	private ImageIcon tanPiece = new ImageIcon(GamePanel.class.getResource("tanPiece.png"));
+	private ImageIcon greenPieceKing = new ImageIcon(GamePanel.class.getResource("greenPieceKing.png"));
+	private ImageIcon tanPieceKing = new ImageIcon(GamePanel.class.getResource("tanPieceKing.png"));
 	private Color tan = new Color(200,170,130);
 	private Color green = new Color(1,50,32);
 	private int rows = 8;
