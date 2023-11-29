@@ -66,8 +66,15 @@ public class CheckersGame {
 	}
 	
 	public void removePiece(BoardCell pieceRemoved) {
+		
+		//if piece is tan and player is tan -> remove piece, do nothing additional
+		//if piece is green and player is tan -> remove piece, call pieceTaken() on GameSidePanel
+		//same stuff above but if the player is green.
 		pieceRemoved.setIcon(null);
 		pieceRemoved.setPiece(false);
+		pieceRemoved.setKing(false);
+		
+		
 	}
 	
 	public void movePiece(BoardCell to) {
@@ -82,6 +89,8 @@ public class CheckersGame {
 			}
 			from = null;
 			to = null;
+			captureMoves.clear();
+			possibleMoves.clear();
 		}
 		else if (from.getPieceColor()==1) {
 			from.setIcon(null);
@@ -94,6 +103,8 @@ public class CheckersGame {
 			}
 			from = null;
 			to = null;
+			captureMoves.clear();
+			possibleMoves.clear();
 		}
 		
 	}
