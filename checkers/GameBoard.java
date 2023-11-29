@@ -176,6 +176,10 @@ public class GameBoard {
 		return cells;
 	}
 	
+	public BoardCell getCell(int row, int column) {
+		return cells[row][column];
+	}
+	
 	public void setPlayerNumber (boolean num) {
 		this.isPlayerOne = num;
 	}

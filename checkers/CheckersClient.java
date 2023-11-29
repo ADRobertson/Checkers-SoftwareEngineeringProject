@@ -4,11 +4,17 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.ImageIcon;
+
 import ocsf.client.AbstractClient;
 
 public class CheckersClient extends AbstractClient{
 
 
+	private ImageIcon greenPiece = new ImageIcon(GamePanel.class.getResource("greenPiece.png"));
+	private ImageIcon tanPiece = new ImageIcon(GamePanel.class.getResource("tanPiece.png"));
+	private ImageIcon greenPieceKing = new ImageIcon(GamePanel.class.getResource("greenPieceKing.png"));
+	private ImageIcon tanPieceKing = new ImageIcon(GamePanel.class.getResource("tanPieceKing.png"));
 	private LoginPanel loginView;
 	private CreateAccountPanel createAccountView;
 	private MenuPanel menuView;
@@ -125,6 +131,44 @@ public class CheckersClient extends AbstractClient{
 			
 			parent.getGamePanel().getBoard().movePiece(to);
 			*/
+		}
+		if (test.contains("CAPTURE")) {
+			String[] temp = test.split(":");
+			
+			String[] splitCoords = temp[1].split(",");
+			
+			splitCoords[0] = splitCoords[0].replace("(", "");
+			splitCoords[1] = splitCoords[1].replace(")", "");
+			
+			BoardCell cell = parent.getGamePanel().getBoard().getCell(Integer.parseInt(splitCoords[0]), Integer.parseInt(splitCoords[1]));
+			boolean isPlayerOne = parent.getGamePanel().getBoard().getPlayerNumber();
+			
+			if (isPlayerOne == true && (cell.getIcon() == greenPiece || cell.getIcon() == greenPieceKing)) {
+				parent.getGamePanel().getSidePanel().pieceTaken();
+			}
+			else if (isPlayerOne == false && (cell.getIcon() == tanPiece || cell.getIcon() == tanPieceKing)) {
+				parent.getGamePanel().getSidePanel().pieceTaken();
+			}
+			parent.getGamePanel().getBoard().removePiece(cell);
+		}
+		if (test.contains("KING")) {
+			String[] temp = test.split(":");
+			
+			String[] splitCoords = temp[1].split(",");
+			
+			splitCoords[0] = splitCoords[0].replace("(", "");
+			splitCoords[1] = splitCoords[1].replace(")", "");
+			
+			BoardCell cell = parent.getGamePanel().getBoard().getCell(Integer.parseInt(splitCoords[0]), Integer.parseInt(splitCoords[1]));
+			boolean isPlayerOne = parent.getGamePanel().getBoard().getPlayerNumber();
+			
+			cell.setKing(true);
+			if (isPlayerOne == true && cell.getIcon() == tanPiece) {
+				cell.setIcon(tanPieceKing);
+			}
+			else if (isPlayerOne == false && cell.getIcon() == greenPiece) {
+				cell.setIcon(greenPieceKing);
+			}
 		}
 		if (test.equals("YOUR TURN")) {
 			parent.getGameSidePanel().setTurnLabel("Your Turn");
