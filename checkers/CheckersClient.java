@@ -77,6 +77,23 @@ public class CheckersClient extends AbstractClient{
 		}
 		else if (test.contains("POSSIBLE")) {
 			parent.getGamePanel().getBoard().unHighlightPotentialMoves();
+			
+			String[] temp = test.split(":");
+			String[] coords = temp[1].split(";");
+			List<Integer> cellCoords = new ArrayList<Integer>();
+			
+			for (int i = 0; i < coords.length; i++) {
+				String[] splitCoords = coords[i].split(",");
+				
+				splitCoords[0] = splitCoords[0].replace("(", "");
+				splitCoords[1] = splitCoords[1].replace(")", "");
+				cellCoords.add(Integer.parseInt(splitCoords[0]));
+				cellCoords.add(Integer.parseInt(splitCoords[1]));
+			}
+			
+			
+			parent.getGamePanel().getBoard().highLightPotentialMoves(cellCoords);
+			/*
 			if (test.contains(";")) {
 				String[] temp = test.split(":",2);
 				String[] cells = temp[1].split(";");
@@ -89,7 +106,7 @@ public class CheckersClient extends AbstractClient{
 				String[] temp = test.split(":");
 				parent.getGamePanel().getBoard().highlightPotentialMoves(temp[1]);
 			}
-			
+			*/
 		}
 		
 		if (test.contains("MOVE")) {
@@ -112,25 +129,6 @@ public class CheckersClient extends AbstractClient{
 			}
 			
 			parent.getGamePanel().getBoard().move(cellCoords.get(0), cellCoords.get(1), cellCoords.get(2), cellCoords.get(3));
-			
-			/*
-			String[] temp = test.split(":",2);
-			String[] cells = temp[1].split(";",2);
-			
-			int[] coordinatesFrom = parseCoordinates(cells[0]);
-			int[] coordinatesTo = parseCoordinates(cells[1]);
-			
-			BoardCell[][] allCells = parent.getGamePanel().getBoard().getCells();
-			BoardCell from = allCells[coordinatesFrom[0]][coordinatesFrom[1]];
-			BoardCell to = allCells[coordinatesTo[0]][coordinatesTo[1]];
-			System.out.println("From: " + from.toString());
-			System.out.println("To: " + to.toString());
-			
-			parent.getGamePanel().getBoard().setFrom(from);
-			parent.getGamePanel().getBoard().setTo(to);
-			
-			parent.getGamePanel().getBoard().movePiece(to);
-			*/
 		}
 		if (test.contains("CAPTURE")) {
 			String[] temp = test.split(":");
@@ -140,6 +138,13 @@ public class CheckersClient extends AbstractClient{
 			splitCoords[0] = splitCoords[0].replace("(", "");
 			splitCoords[1] = splitCoords[1].replace(")", "");
 			
+			
+			
+			parent.getGamePanel().getBoard().capture(Integer.parseInt(splitCoords[0]),Integer.parseInt(splitCoords[1]));
+			
+			
+			//probably want to pull as little of the game logic into checkers client as possible - we can let GameBoard handle most of the logic regarding actual cells
+			/*
 			BoardCell cell = parent.getGamePanel().getBoard().getCell(Integer.parseInt(splitCoords[0]), Integer.parseInt(splitCoords[1]));
 			boolean isPlayerOne = parent.getGamePanel().getBoard().getPlayerNumber();
 			
@@ -150,6 +155,7 @@ public class CheckersClient extends AbstractClient{
 				parent.getGamePanel().getSidePanel().pieceTaken();
 			}
 			parent.getGamePanel().getBoard().removePiece(cell);
+			*/
 		}
 		if (test.contains("KING")) {
 			String[] temp = test.split(":");
@@ -158,6 +164,9 @@ public class CheckersClient extends AbstractClient{
 			
 			splitCoords[0] = splitCoords[0].replace("(", "");
 			splitCoords[1] = splitCoords[1].replace(")", "");
+			
+			parent.getGamePanel().getBoard().king(Integer.parseInt(splitCoords[0]), Integer.parseInt(splitCoords[1]));
+			/*
 			
 			BoardCell cell = parent.getGamePanel().getBoard().getCell(Integer.parseInt(splitCoords[0]), Integer.parseInt(splitCoords[1]));
 			boolean isPlayerOne = parent.getGamePanel().getBoard().getPlayerNumber();
@@ -169,6 +178,7 @@ public class CheckersClient extends AbstractClient{
 			else if (isPlayerOne == false && cell.getIcon() == greenPiece) {
 				cell.setIcon(greenPieceKing);
 			}
+			*/
 		}
 		if (test.equals("YOUR TURN")) {
 			parent.getGameSidePanel().setTurnLabel("Your Turn");

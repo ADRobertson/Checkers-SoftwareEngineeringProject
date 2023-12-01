@@ -17,6 +17,7 @@ import javax.swing.JButton;
 
 public class GameBoard {
 	private boolean isPlayerOne;
+	private Integer playerPieceColor;
 	private BoardCell[][] cells;
 	private List<Integer> oddStartCells = Arrays.asList(new Integer[] {1,3,5,7});
 	private List<Integer> evenStartCells = Arrays.asList(new Integer[] {0,2,4,6});
@@ -40,21 +41,42 @@ public class GameBoard {
 		BoardCell from = cells[fromRow][fromColumn];
 		BoardCell to = cells[toRow][toColumn];
 		
+		
+		
+		to.setIcon(from.getIcon());
+		to.setPieceColor(from.getPieceColor());
+		to.setPiece(true);
+		to.setKing(from.isKing());
+		
 		from.setIcon(null);
 		from.setPiece(false);
-		
-		if (from.getPieceColor() == 1) {
-			to.setIcon(greenPiece);
-			to.setPieceColor(1);
-			to.setPiece(true);
-		}
-		else if (from.getPieceColor() == 0) {
-			to.setIcon(tanPiece);
-			to.setPieceColor(0);
-			to.setPiece(true);
-		}
+		from.setKing(false);
 		
 		unHighlightPotentialMoves();
+	}
+	
+	public void capture(int row, int column) {
+		BoardCell toCapture = cells[row][column];
+		if (playerPieceColor == toCapture.getPieceColor()) {
+			removePiece(toCapture);
+		}
+		else if (playerPieceColor != toCapture.getPieceColor()) {
+			removePiece(toCapture);
+			parent.getSidePanel().pieceTaken();
+		}
+	}
+	
+	public void king(int row, int column) {
+		BoardCell toKing = cells[row][column];
+		
+		toKing.setKing(true);
+		
+		if (toKing.getPieceColor() == 0) {
+			toKing.setIcon(tanPieceKing);
+		}
+		else if (toKing.getPieceColor() == 1) {
+			toKing.setIcon(greenPieceKing);
+		}
 	}
 	
 	public void fillTranslationDictionary() {
@@ -71,6 +93,7 @@ public class GameBoard {
 	public void removePiece(BoardCell pieceRemoved) {
 		pieceRemoved.setIcon(null);
 		pieceRemoved.setPiece(false);
+		pieceRemoved.setKing(false);
 	}
 	
 	public void moveEnemyPiece(BoardCell from, BoardCell to) {
@@ -182,6 +205,13 @@ public class GameBoard {
 	
 	public void setPlayerNumber (boolean num) {
 		this.isPlayerOne = num;
+		
+		if (isPlayerOne) {
+			playerPieceColor = 0;
+		}
+		else {
+			playerPieceColor = 1;
+		}
 	}
 	
 	public boolean getPlayerNumber () {
@@ -206,6 +236,13 @@ public class GameBoard {
 		coordinates[1] = coordinates[1].replaceAll("[^0-9]", "");
 		
 		cells[Integer.parseInt(coordinates[0])][Integer.parseInt(coordinates[1])].setBackground(highLightColor);
+	}
+	
+	public void highLightPotentialMoves(List<Integer> coords) {
+		for (int i = 0; i < coords.size(); i++) {
+			cells[coords.get(i)][coords.get(i + 1)].setBackground(highLightColor);
+			i = i +1;
+		}
 	}
 	
 	public void unHighlightPotentialMoves() {

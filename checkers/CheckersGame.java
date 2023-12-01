@@ -37,7 +37,7 @@ public class CheckersGame {
 	private boolean started = false;
 	//used to mirror moves to the other side of the board (will need to be done for all player two input...)
 	private Map<Integer, Integer> dictionary = new HashMap<>();
-	
+
 	private boolean jumpMove = false;
 	private List<BoardCell> captureMoves = new ArrayList<BoardCell>();
 
@@ -64,19 +64,19 @@ public class CheckersGame {
 		dictionary.put(1, 6);
 		dictionary.put(0, 7);
 	}
-	
+
 	public void removePiece(BoardCell pieceRemoved) {
-		
+
 		//if piece is tan and player is tan -> remove piece, do nothing additional
 		//if piece is green and player is tan -> remove piece, call pieceTaken() on GameSidePanel
 		//same stuff above but if the player is green.
 		pieceRemoved.setIcon(null);
 		pieceRemoved.setPiece(false);
 		pieceRemoved.setKing(false);
-		
-		
+
+
 	}
-	
+
 	public void movePiece(BoardCell to) {
 		if (from.getPieceColor() == 0) {
 			from.setIcon(null);
@@ -106,17 +106,17 @@ public class CheckersGame {
 			captureMoves.clear();
 			possibleMoves.clear();
 		}
-		
+
 	}
-	
-	
+
+
 	public void capture(BoardCell toCapture) {
 		toCapture.setIcon(null);
 		toCapture.setPiece(false);
 		toCapture.setKing(false);
 		System.out.println("Captured: " + toCapture.toString());
 	}
-	
+
 	//dictionary of boardCell that sends a specific message if we move to a certain piece that is a jump
 	//might need to return object here.
 	public Object processClick(int i, int j, ConnectionToClient sender) {
@@ -128,10 +128,16 @@ public class CheckersGame {
 				from = cells[i][j];
 				//send back determine potential moves so that the user can make the next choice.
 				possibleMoves = determinePotentialMoves();
-				
+
 				//if there are moves available, send them to the player
 				if (!possibleMoves.isEmpty()) {
 					//server.sendMessageToClient("POSSIBLE:" + possibleMoves.get(0).toString() + ";" + possibleMoves.get(1).toString(), sender);
+					if (possibleMoves.size() == 4) {
+						server.sendMessageToClient("POSSIBLE:" + possibleMoves.get(0).toString() + ";" + possibleMoves.get(1).toString() + ";" + possibleMoves.get(2).toString() + ";" + possibleMoves.get(3).toString(), sender);
+					}
+					if (possibleMoves.size() == 3) {
+						server.sendMessageToClient("POSSIBLE:" + possibleMoves.get(0).toString() + ";" + possibleMoves.get(1).toString() + ";" + possibleMoves.get(2).toString(), sender);
+					}
 					if (possibleMoves.size() == 2) {
 						server.sendMessageToClient("POSSIBLE:" + possibleMoves.get(0).toString() + ";" + possibleMoves.get(1).toString(), sender);
 					}
@@ -151,39 +157,60 @@ public class CheckersGame {
 				//from = null;
 				//since this move is playerOne, we check if this move is in capture moves
 				if (captureMoves.contains(cells[i][j])) {
-					if (from.getColumn() - j > 0) {
-						//this is a right capture
-						server.sendMessageToClient("CAPTURE:"+cells[from.getRow()-1][from.getColumn()-1].toString(), playerOne);
-						
-						//need to flip this 
-						BoardCell flippedCapture = cells[dictionary.get(from.getRow()-1)][dictionary.get(from.getColumn()-1)];
-						server.sendMessageToClient("CAPTURE:"+flippedCapture.toString(), playerTwo);
-						capture(cells[from.getRow()-1][from.getColumn()-1]);
+					if (i < from.getRow()) {
+						if (from.getColumn() - j > 0) {
+							//this is a right capture
+							server.sendMessageToClient("CAPTURE:"+cells[from.getRow()-1][from.getColumn()-1].toString(), playerOne);
+
+							//need to flip this 
+							BoardCell flippedCapture = cells[dictionary.get(from.getRow()-1)][dictionary.get(from.getColumn()-1)];
+							server.sendMessageToClient("CAPTURE:"+flippedCapture.toString(), playerTwo);
+							capture(cells[from.getRow()-1][from.getColumn()-1]);
+						}
+						if (from.getColumn() - j < 0) {
+							//this is a left capture
+							server.sendMessageToClient("CAPTURE:"+cells[from.getRow()-1][from.getColumn()+1].toString(), playerOne);
+
+							BoardCell flippedCapture = cells[dictionary.get(from.getRow()-1)][dictionary.get(from.getColumn()+1)];
+
+							server.sendMessageToClient("CAPTURE:"+flippedCapture.toString(),playerTwo);
+							capture(cells[from.getRow()-1][from.getColumn()+1]);
+						}
 					}
-					if (from.getColumn() - j < 0) {
-						//this is a left capture
-						server.sendMessageToClient("CAPTURE:"+cells[from.getRow()-1][from.getColumn()+1].toString(), playerOne);
-						
-						BoardCell flippedCapture = cells[dictionary.get(from.getRow()-1)][dictionary.get(from.getColumn()+1)];
-						
-						server.sendMessageToClient("CAPTURE:"+flippedCapture.toString(),playerTwo);
-						capture(cells[from.getRow()-1][from.getColumn()+1]);
+					else if (i > from.getRow()) {
+						if (from.getColumn()- j > 0) {
+							//backleftMove
+							server.sendMessageToClient("CAPTURE:"+cells[from.getRow()+1][from.getColumn()-1], playerOne);
+							
+							BoardCell flippedCapture = cells[dictionary.get(from.getRow()+1)][dictionary.get(from.getColumn()-1)];
+							server.sendMessageToClient("CAPTURE:"+flippedCapture.toString(), playerTwo);
+							capture(cells[from.getRow()+1][from.getColumn()-1]);
+						}
+						if (from.getColumn() - j < 0) {
+							//backrightmove
+							server.sendMessageToClient("CAPTURE:"+cells[from.getRow()+1][from.getColumn()+1], playerOne);
+							
+							BoardCell flippedCapture = cells[dictionary.get(from.getRow()+1)][dictionary.get(from.getColumn()+1)];
+							
+							server.sendMessageToClient("CAPTURE:"+flippedCapture.toString(), playerTwo);
+						}
 					}
 					
+
 				}
-				
-				
-				
+
+
+
 				//send the exact move to playerOne
 				server.sendMessageToClient("MOVE:" + from.toString() + ";" + cells[i][j].toString(), playerOne);
 				//otherwise mirror move and send to playerTwo
 				BoardCell mirroredFrom = cells[dictionary.get(from.getRow())][dictionary.get(from.getColumn())];
 				BoardCell mirroredTo = cells[dictionary.get(i)][dictionary.get(j)];
-				
+
 				server.sendMessageToClient("MOVE:" + mirroredFrom.toString() + ";" + mirroredTo.toString(), playerTwo);
 				movePiece(cells[i][j]);
-				
-				
+
+
 				//if piece was on first row
 				if (i == 0) {
 					cells[i][j].setKing(true);
@@ -192,9 +219,9 @@ public class CheckersGame {
 					//send mirrored version of piece that is being kinged to playerTwo
 					server.sendMessageToClient("KING:"+ mirroredTo.toString(), playerTwo);
 				}
-				
+
 				flipTurns();
-				
+
 				server.sendMessageToClient("END TURN", playerOne);
 				server.sendMessageToClient("YOUR TURN", playerTwo);
 			}
@@ -209,19 +236,26 @@ public class CheckersGame {
 
 				//send back determine potential moves so that the user can make the next choice
 				possibleMoves = determinePotentialMoves();
-				
+
 				//if there are moves available, send them to the player
 				if (!possibleMoves.isEmpty()) {
-					
+					List<BoardCell> flippedCells = new ArrayList<BoardCell>();
+
+					for (BoardCell boardCell : possibleMoves) {
+						flippedCells.add(cells[dictionary.get(boardCell.getRow())][dictionary.get(boardCell.getColumn())]);
+					}
+					if (possibleMoves.size() == 4) {
+						server.sendMessageToClient("POSSIBLE:" + flippedCells.get(0).toString() + ";" + flippedCells.get(1).toString() + ";" + flippedCells.get(2).toString() + ";" + flippedCells.get(3).toString(), sender);
+					}
+					if (possibleMoves.size() == 3) {
+						server.sendMessageToClient("POSSIBLE:" + flippedCells.get(0).toString() + ";" + flippedCells.get(1).toString() + ";" + flippedCells.get(2).toString(), sender);
+					}
 					//will have to flip potential moves before sending back to player two? since they are seeing a non-flipped version of their gamestate???
 					if (possibleMoves.size() == 2) {
-						BoardCell flippedPossibleMove = cells[dictionary.get(possibleMoves.get(0).getRow())][dictionary.get(possibleMoves.get(0).getColumn())];
-						BoardCell flippedPossibleMove2 = cells[dictionary.get(possibleMoves.get(1).getRow())][dictionary.get(possibleMoves.get(1).getColumn())];
-						server.sendMessageToClient("POSSIBLE:" + flippedPossibleMove.toString() + ";" + flippedPossibleMove2.toString(), sender);
+						server.sendMessageToClient("POSSIBLE:" + flippedCells.get(0).toString() + ";" + flippedCells.get(1).toString(), sender);
 					}
 					else if (possibleMoves.size() == 1) {
-						BoardCell flippedPossibleMove = cells[dictionary.get(possibleMoves.get(0).getRow())][dictionary.get(possibleMoves.get(0).getColumn())];
-						server.sendMessageToClient("POSSIBLE:" + flippedPossibleMove.toString(), sender);
+						server.sendMessageToClient("POSSIBLE:" + flippedCells.get(0).toString(), sender);
 					}
 					//server.sendMessageToClient("POSSIBLE:" + possibleMoves.get(0).toString() + ";" + possibleMoves.get(1).toString(), sender);
 				}
@@ -236,25 +270,54 @@ public class CheckersGame {
 				//from = null;
 				//send flipped version of move to playerOne
 				if (captureMoves.contains(cells[twoI][twoJ])) {
-					if (from.getColumn() - twoJ > 0) {
-						//this is a left capture
-						server.sendMessageToClient("CAPTURE:"+cells[from.getRow()+1][from.getColumn()+1].toString(), playerOne);
-						
-						//need to flip this 
-						BoardCell flippedCapture = cells[dictionary.get(from.getRow()+1)][dictionary.get(from.getColumn()+1)];
-						server.sendMessageToClient("CAPTURE:"+flippedCapture.toString(), playerTwo);
+					if (twoI > from.getRow()) {
+						//forward
+						if (from.getColumn() - twoJ > 0) {
+							//this is a left capture
+							server.sendMessageToClient("CAPTURE:"+cells[from.getRow()+1][from.getColumn()-1].toString(), playerOne);
+
+							//need to flip this 
+							BoardCell flippedCapture = cells[dictionary.get(from.getRow()+1)][dictionary.get(from.getColumn()-1)];
+							server.sendMessageToClient("CAPTURE:"+flippedCapture.toString(), playerTwo);
+							capture(cells[from.getRow()+1][from.getColumn()-1]);
+						}
+						if (from.getColumn() - twoJ < 0) {
+							//this is a right capture
+							server.sendMessageToClient("CAPTURE:"+cells[from.getRow()+1][from.getColumn()+1].toString(), playerOne);
+
+							BoardCell flippedCapture = cells[dictionary.get(from.getRow()+1)][dictionary.get(from.getColumn()+1)];
+
+							server.sendMessageToClient("CAPTURE:"+flippedCapture.toString(),playerTwo);
+							capture(cells[from.getRow()+1][from.getColumn()+1]);
+						}
 					}
-					if (from.getColumn() - twoJ < 0) {
-						//this is a right capture
-						server.sendMessageToClient("CAPTURE:"+cells[from.getRow()+1][from.getColumn()-1].toString(), playerOne);
+					else if (twoI < from.getRow()) {
+						//backwards
+						if (from.getColumn() - twoJ > 0) {
+							//back left capture
+							server.sendMessageToClient("CAPTURE:"+cells[from.getRow()-1][from.getColumn()-1].toString(), playerOne);
+							
+							BoardCell flippedCapture = cells[dictionary.get(from.getRow()-1)][dictionary.get(from.getColumn()-1)];
+							
+							server.sendMessageToClient("CAPTURE:"+flippedCapture.toString(), playerTwo);
+							capture(cells[from.getRow()-1][from.getColumn()-1]);
+							
+						}
 						
-						BoardCell flippedCapture = cells[dictionary.get(from.getRow()+1)][dictionary.get(from.getColumn()-1)];
-						
-						server.sendMessageToClient("CAPTURE:"+flippedCapture.toString(),playerTwo);
+						if (from.getColumn() - twoJ < 0) {
+							//back right capture
+							server.sendMessageToClient("CAPTURE:"+cells[from.getRow()-1][from.getColumn()+1].toString(), playerOne);
+							
+							BoardCell flippedCapture = cells[dictionary.get(from.getRow()-1)][dictionary.get(from.getColumn()+1)];
+							
+							server.sendMessageToClient("CAPTURE:"+flippedCapture.toString(), playerTwo);
+							capture(cells[from.getRow()-1][from.getColumn()+1]);
+						}
 					}
 					
+
 				}
-				
+
 				server.sendMessageToClient("MOVE:" + from.toString() + ";" + cells[twoI][twoJ].toString(), playerOne);
 
 				//unflip the from variable to send to playerTwo
@@ -263,22 +326,22 @@ public class CheckersGame {
 				//send unflipped version of move to playerTwo
 				server.sendMessageToClient("MOVE:" + mirroredFrom.toString() + ";" + cells[i][j].toString(), playerTwo);
 				movePiece(cells[twoI][twoJ]);
-				
+
 				//if the move is on the last row of playerOne's side, king p2 piece
 				if (twoI == 7) {
 					cells[twoI][twoJ].setKing(true);
-					
+
 					//send unflipped version of king message to playerTwo
 					server.sendMessageToClient("KING:" + cells[i][j].toString(), playerTwo);
 					//send flipped version of king message to playerOne (this is also what will be referenced server side)
 					server.sendMessageToClient("KING:" + cells[twoI][twoJ], playerOne);
 				}
-				
-				
+
+
 				flipTurns();
 				server.sendMessageToClient("END TURN", playerTwo);
 				server.sendMessageToClient("YOUR TURN", playerOne);
-				
+
 			}
 		}
 		return null;
@@ -300,7 +363,7 @@ public class CheckersGame {
 		BoardCell leftMove = null;
 		BoardCell backLeftMove = null;
 		BoardCell backRightMove = null;
-		
+
 
 
 		//if tan (playerOne) piece
@@ -316,59 +379,113 @@ public class CheckersGame {
 				System.out.println("couldn't get right move");
 
 			}
+			try {
+				backRightMove = cells[i+1][j+1];
+			} catch (Exception e) {
+				System.out.println("couldn't get back right move");
+			}
+
+			try {
+				backLeftMove = cells[i+1][j-1];
+			} catch (Exception e) {
+				System.out.println("couldn't get back left move");
+			}
+
 			//if the piece is a king
 			if (from.isKing()) {
-
+				//if there could be a back left move but theres a piece in the way
+				if (backLeftMove != null && backLeftMove.hasPiece()) {
+					//if it's the same color as your piece, you can't move
+					if (backLeftMove.getPieceColor() == 0) {
+						backLeftIsPossible = false;
+					}
+					//otherwise, we're going to try and find a jump
+					else {
+						try {
+							// got down one more, left one more
+							backLeftMove = cells[backLeftMove.getRow()+1][backLeftMove.getColumn()-1];
+							//if there isn't a piece here we can jump
+							if (!backLeftMove.hasPiece()) {
+								backLeftIsPossible = true;
+								jumpBackLeft = true;
+							}
+						} catch (Exception e) {
+							System.out.println("Jump on back left not possible");
+						}
+					}
+				}
+				else if (backLeftMove != null) {
+					backLeftIsPossible = true;
+				}
+				if (backRightMove != null && backRightMove.hasPiece()) {
+					if (backRightMove.getPieceColor() == 0) {
+						backRightIsPossible = false;
+					}
+					else {
+						try {
+							backRightMove = cells[backRightMove.getRow()+1][backRightMove.getColumn()+1];
+							if (!backRightMove.hasPiece()) {
+								backRightIsPossible = true;
+								jumpBackRight = true;
+							}
+						} catch (Exception e) {
+							System.out.println("Jump on back right not possible");
+						}
+					}
+				}
+				else if (backRightMove != null) {
+					backRightIsPossible = true;
+				}
 			}
 			//if the piece is a normal piece
-			else if (!from.isKing()) {
-				// if there could be a left move, but there'sd a piece in the way
-				if (leftMove != null && leftMove.hasPiece()) {
-					//if the piece is the same color as player, can't move
-					if (leftMove.getPieceColor() == 0) {
-						leftIsPossible = false;
-					}
-					//otherwise, we need to try and go up one more space diagnollly for left and right move
-					else {
-						
-						try {
-							leftMove = cells[leftMove.getRow()-1][leftMove.getColumn()-1];
-							if (!leftMove.hasPiece()) {
-								leftIsPossible = true;
-								jumpLeft = true;
-							}
-						} catch (Exception e) {
-							System.out.println("Jump on left not possible");
+			//if (!from.isKing()) {
+			// if there could be a left move, but there'sd a piece in the way
+			if (leftMove != null && leftMove.hasPiece()) {
+				//if the piece is the same color as player, can't move
+				if (leftMove.getPieceColor() == 0) {
+					leftIsPossible = false;
+				}
+				//otherwise, we need to try and go up one more space diagnollly for left and right move
+				else {
+
+					try {
+						leftMove = cells[leftMove.getRow()-1][leftMove.getColumn()-1];
+						if (!leftMove.hasPiece()) {
+							leftIsPossible = true;
+							jumpLeft = true;
 						}
-						
-					} 
-					
-				}
-				else if (leftMove!=null){
-					leftIsPossible = true;
-				}
-				if (rightMove != null && rightMove.hasPiece()) {
-					if (rightMove.getPieceColor() == 0) {
-						rightIsPossible = false;
+					} catch (Exception e) {
+						System.out.println("Jump on left not possible");
 					}
-					else {
-						
-						try {
-							rightMove = cells[rightMove.getRow()-1][rightMove.getColumn()+1];
-							if (!rightMove.hasPiece()) {
-								rightIsPossible = true;
-								jumpRight = true;
-							}
-						} catch (Exception e) {
-							System.out.println("Jump on right not possible");
-						}
-						
-					} 
-				}
-				else if (rightMove !=null) {
-					rightIsPossible = true;
-				}
+
+				} 
+
 			}
+			else if (leftMove!=null){
+				leftIsPossible = true;
+			}
+			if (rightMove != null && rightMove.hasPiece()) {
+				if (rightMove.getPieceColor() == 0) {
+					rightIsPossible = false;
+				}
+				else {
+
+					try {
+						rightMove = cells[rightMove.getRow()-1][rightMove.getColumn()+1];
+						if (!rightMove.hasPiece()) {
+							rightIsPossible = true;
+							jumpRight = true;
+						}
+					} catch (Exception e) {
+						System.out.println("Jump on right not possible");
+					}
+
+				} 
+			}
+			else if (rightMove !=null) {
+				rightIsPossible = true;
+			}
+			//}
 		}
 		//if it's a green piece (playerTwo)
 		else if (from.getPieceColor() == 1) {
@@ -383,53 +500,102 @@ public class CheckersGame {
 				System.out.println("couldn't get right move");
 
 			}
-			
+			try {
+				backRightMove = cells[i-1][j-1];
+			} catch (Exception e) {
+				System.out.println("couldn't get back right move");
+			}
+
+			try {
+				backLeftMove = cells[i-1][j+1];
+			} catch (Exception e) {
+				System.out.println("couldn't get back left move");
+			}
+
 			if (from.isKing()) {
-				
-			}
-			else if (!from.isKing()) {
-				if (leftMove != null && leftMove.hasPiece()) {
-					if (leftMove.getPieceColor() == 1) {
-						leftIsPossible = false;
+				//need to repeat move selection but for backwards movement, too (should be the same as regular p1 movements)
+				if (backLeftMove != null && backLeftMove.hasPiece()) {
+					if (backLeftMove.getPieceColor() == 1) {
+						backLeftIsPossible = false;
 					}
 					else {
 						try {
-							leftMove = cells[leftMove.getRow()+1][leftMove.getColumn()+1];
-							if (!leftMove.hasPiece()) {
-								leftIsPossible = true;
-								jumpLeft = true;
+							backLeftMove = cells[backLeftMove.getRow()-1][backLeftMove.getColumn()-1];
+							if (!backLeftMove.hasPiece()) {
+								backLeftIsPossible = true;
+								jumpBackLeft = true;
 							}
-							
 						} catch (Exception e) {
-							System.out.println("Jump on left Not Possible");
+							System.out.println("Jump on back left not possible");
 						}
-						
 					}
 				}
-				else if (leftMove != null) {
-					leftIsPossible = true;
+				else if (backLeftMove != null) {
+					backLeftIsPossible = true;
 				}
-				
-				if (rightMove != null && rightMove.hasPiece()) {
-					if (rightMove.getPieceColor() == 1) {
-						rightIsPossible = false;
+				if (backRightMove != null && backRightMove.hasPiece()) {
+					if (backRightMove.getPieceColor() == 1) {
+						backRightIsPossible = false;
 					}
 					else {
 						try {
-							rightMove = cells[rightMove.getRow()+1][rightMove.getColumn()-1];
-							if (!rightMove.hasPiece()) {
-								rightIsPossible = true;
-								jumpRight = true;
+							backRightMove = cells[backRightMove.getRow()-1][backRightMove.getColumn()+1];
+							if (!backRightMove.hasPiece()) {
+								backRightIsPossible = true;
+								jumpBackRight = true;
 							}
 						} catch (Exception e) {
-							System.out.println("Jump On Right Not Possible");
+							System.out.println("Jump on back right not possible");
 						}
 					}
 				}
-				else if (rightMove != null) {
-					rightIsPossible = true;
+				else if (backRightMove != null) {
+					backRightIsPossible = true;
 				}
 			}
+			//if (!from.isKing()) {
+			if (leftMove != null && leftMove.hasPiece()) {
+				if (leftMove.getPieceColor() == 1) {
+					leftIsPossible = false;
+				}
+				else {
+					try {
+						leftMove = cells[leftMove.getRow()-1][leftMove.getColumn()-1];
+						if (!leftMove.hasPiece()) {
+							leftIsPossible = true;
+							jumpLeft = true;
+						}
+
+					} catch (Exception e) {
+						System.out.println("Jump on left Not Possible");
+					}
+
+				}
+			}
+			else if (leftMove != null) {
+				leftIsPossible = true;
+			}
+
+			if (rightMove != null && rightMove.hasPiece()) {
+				if (rightMove.getPieceColor() == 1) {
+					rightIsPossible = false;
+				}
+				else {
+					try {
+						rightMove = cells[rightMove.getRow()+1][rightMove.getColumn()-1];
+						if (!rightMove.hasPiece()) {
+							rightIsPossible = true;
+							jumpRight = true;
+						}
+					} catch (Exception e) {
+						System.out.println("Jump On Right Not Possible");
+					}
+				}
+			}
+			else if (rightMove != null) {
+				rightIsPossible = true;
+			}
+			//}
 
 		}
 		if (rightIsPossible) {
