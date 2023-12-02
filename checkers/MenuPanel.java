@@ -6,6 +6,7 @@ import javax.swing.JLabel;
 import java.awt.Color;
 
 import javax.swing.JButton;
+import javax.swing.SwingConstants;
 
 public class MenuPanel extends JPanel{
 	private JLabel menuLabel;
@@ -37,25 +38,26 @@ public class MenuPanel extends JPanel{
 		this.setBackground(new Color(200,170,130));
 		
 		menuLabel = new JLabel("Menu");
-		menuLabel.setBounds(193, 11, 46, 14);
+		menuLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		menuLabel.setBounds(240, 70, 75, 14);
 		add(menuLabel);
 		
 		hostGameButton = new JButton("Host Game");
 		hostGameButton.setForeground(new Color(1,50,32));
 		hostGameButton.setBackground(new Color(215,185,145));
-		hostGameButton.setBounds(152, 64, 112, 23);
+		hostGameButton.setBounds(220, 120, 115, 25);
 		add(hostGameButton);
 		
 		joinGameButton = new JButton("Join Game");
 		joinGameButton.setForeground(new Color(1,50,32));
 		joinGameButton.setBackground(new Color(215,185,145));
-		joinGameButton.setBounds(152, 98, 112, 23);
+		joinGameButton.setBounds(220, 180, 115, 25);
 		add(joinGameButton);
 		
 		logOutButton = new JButton("Log Out");
 		logOutButton.setForeground(new Color(1,50,32));
 		logOutButton.setBackground(new Color(215,185,145));
-		logOutButton.setBounds(152, 246, 112, 23);
+		logOutButton.setBounds(220, 242, 112, 23);
 		add(logOutButton);
 		
 		this.parent = clientGUI;

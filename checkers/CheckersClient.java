@@ -186,6 +186,20 @@ public class CheckersClient extends AbstractClient{
 		if (test.equals("END TURN")) {
 			parent.getGameSidePanel().setTurnLabel("End Turn");
 		}
+		if (test.equals("WIN")) {
+			parent.getLeaderboardPanel().setWinLoseLabel("*** YOU WIN ***");
+			
+			//ZAC ADD WIN INCREMENT TO DATABASE
+			
+			parent.changeToLeaderboardView();
+		}
+		if (test.equals("LOSS")) {
+			parent.getLeaderboardPanel().setWinLoseLabel("*** YOU LOSE ***");
+			
+			//ZAC ADD WIN INCREMENT TO DATABASE
+			
+			parent.changeToLeaderboardView();
+		}
 		
 	}
 	

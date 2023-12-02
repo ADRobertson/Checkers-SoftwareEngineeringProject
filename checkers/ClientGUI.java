@@ -16,6 +16,7 @@ public class ClientGUI extends JFrame{
 	private CheckersClient client;
 	private GamePanel gamePlayView;
 	private GameSidePanel gameInfoView;
+	private LeaderboardPanel leaderboardView;
 	private JPanel gameWrapper;
 	private MenuPanel menuView;
 	//private CardLayout cardLayout = new CardLayout();
@@ -27,6 +28,9 @@ public class ClientGUI extends JFrame{
 	}
 	public GameSidePanel getGameSidePanel() {
 		return gameInfoView;
+	}
+	public LeaderboardPanel getLeaderboardPanel() {
+		return leaderboardView;
 	}
 	public void changeToMenuView() {
 		this.setContentPane(menuView);
@@ -56,6 +60,12 @@ public class ClientGUI extends JFrame{
 		this.invalidate();
 		this.validate();
 	}
+	public void changeToLeaderboardView () {
+		this.setSize(600,600);
+		this.setContentPane(leaderboardView);
+		this.invalidate();
+		this.validate();
+	}
 	
 
 	
@@ -72,6 +82,7 @@ public class ClientGUI extends JFrame{
 		this.menuView = new MenuPanel(this);
 		this.gameInfoView = new GameSidePanel(this);
 		this.gamePlayView = new GamePanel(this, gameInfoView);
+		this.leaderboardView = new LeaderboardPanel(this);
 		
 		
 		this.gameWrapper = new JPanel(new BorderLayout());

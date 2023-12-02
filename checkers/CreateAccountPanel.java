@@ -70,48 +70,48 @@ public class CreateAccountPanel extends JPanel{
 		
 		userNameLabel = new JLabel("Username:");
 		userNameLabel.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		userNameLabel.setBounds(134, 111, 99, 14);
+		userNameLabel.setBounds(180, 115, 99, 14);
 		add(userNameLabel);
 		
 		passwordLabel = new JLabel("Password:");
 		passwordLabel.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		passwordLabel.setBounds(134, 136, 70, 14);
+		passwordLabel.setBounds(180, 155, 70, 14);
 		add(passwordLabel);
 		
 		verifyPasswordLabel= new JLabel("Verify Password:");
 		verifyPasswordLabel.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		verifyPasswordLabel.setBounds(115, 161, 108, 14);
+		verifyPasswordLabel.setBounds(180, 195, 108, 14);
 		add(verifyPasswordLabel);
 		
 		userNameTextField = new JTextField();
-		userNameTextField.setBounds(233, 111, 86, 20);
+		userNameTextField.setBounds(290, 113, 86, 20);
 		add(userNameTextField);
 		userNameTextField.setColumns(10);
 		
 		passwordTextField = new JPasswordField();
-		passwordTextField.setBounds(233, 136, 86, 20);
+		passwordTextField.setBounds(290, 153, 86, 20);
 		add(passwordTextField);
 		passwordTextField.setColumns(10);
 		
 		verifyPasswordTextField = new JPasswordField();
-		verifyPasswordTextField.setBounds(233, 161, 86, 20);
+		verifyPasswordTextField.setBounds(290, 193, 86, 20);
 		add(verifyPasswordTextField);
 		verifyPasswordTextField.setColumns(10);
 		
 		submitButton = new JButton("Submit");
 		submitButton.setForeground(new Color(1,50,32));
 		submitButton.setBackground(new Color(215,185,145));
-		submitButton.setBounds(145, 186, 89, 23);
+		submitButton.setBounds(180, 252, 89, 23);
 		add(submitButton);
 		
 		cancelButton = new JButton("Cancel");
 		cancelButton.setForeground(new Color(1,50,32));
 		cancelButton.setBackground(new Color(215,185,145));
-		cancelButton.setBounds(243, 186, 89, 23);
+		cancelButton.setBounds(275, 252, 89, 23);
 		add(cancelButton);
 		
 		statusMessageLabel = new JLabel("");
-		statusMessageLabel.setBounds(153, 74, 166, 14);
+		statusMessageLabel.setBounds(195, 75, 166, 14);
 		add(statusMessageLabel);
 		this.client = parent.getChatClient();
 		
@@ -119,7 +119,7 @@ public class CreateAccountPanel extends JPanel{
 		
 		JLabel lblNewLabel = new JLabel("Enter a Username and Password to Create an Account.");
 		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		lblNewLabel.setBounds(79, 33, 311, 51);
+		lblNewLabel.setBounds(140, 35, 311, 51);
 		add(lblNewLabel);
 		
 		

@@ -6,6 +6,7 @@ import java.awt.Font;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 
 
 
@@ -31,18 +32,19 @@ public class InitialPanel extends JPanel{
 		this.parent = clientGUI;
 		setLayout(null);
 		titleLabel = new JLabel("Account Information");
-		titleLabel.setBounds(102, 44, 255, 40);
+		titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		titleLabel.setBounds(170, 45, 255, 40);
 		titleLabel.setFont(new Font("Tahoma", Font.PLAIN, 24));
 		add(titleLabel);
 		
 		loginButton = new JButton("Login");
-		loginButton.setBounds(167, 95, 89, 23);
+		loginButton.setBounds(245, 130, 89, 23);
 		loginButton.setForeground(new Color(1,50,32));
 		loginButton.setBackground(new Color(215,185,145));
 		add(loginButton);
 		
 		createButton= new JButton("Create");
-		createButton.setBounds(167, 129, 89, 23);
+		createButton.setBounds(245, 180, 89, 23);
 		createButton.setForeground(new Color(1,50,32));
 		createButton.setBackground(new Color(215,185,145));
 		add(createButton);
