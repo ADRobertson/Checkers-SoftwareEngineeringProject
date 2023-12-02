@@ -272,6 +272,10 @@ public class CheckersGame {
 				flipTurns();
 				server.sendMessageToClient("END TURN", playerOne);
 				server.sendMessageToClient("YOUR TURN", playerTwo);
+				
+//				// FOR TESTING: END GAME AFTER ONE MOVE
+//				server.sendMessageToClient("WIN", playerOne);
+//				server.sendMessageToClient("LOSS", playerTwo);
 			}
 
 		}
@@ -390,6 +394,11 @@ public class CheckersGame {
 				
 				server.sendMessageToClient("END TURN", playerTwo);
 				server.sendMessageToClient("YOUR TURN", playerOne);
+				
+				
+//				// FOR TESTING: END GAME AFTER ONE MOVE
+//				server.sendMessageToClient("WIN", playerOne);
+//				server.sendMessageToClient("LOSS", playerTwo);
 			}
 		}
 		return null;

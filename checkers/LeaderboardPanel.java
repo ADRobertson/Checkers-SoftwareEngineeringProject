@@ -5,6 +5,7 @@ import java.awt.Font;
 import java.util.ArrayList;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 
 public class LeaderboardPanel extends JPanel {
 	private ClientGUI parent;
@@ -12,23 +13,62 @@ public class LeaderboardPanel extends JPanel {
 	private LeaderboardController controller;
 	private JLabel winLoseLabel;
 	private JLabel titleLabel;
-	private JTextArea leaderboard;
+	//private JTextArea leaderboard;
 	private JButton logout;
 	private JButton exit;
+	private JTable leaderboard;
+	private DefaultTableModel model;
 	
-	public void setLeaderboard (String leaderboardInfo) {
-		leaderboard.setText("");
-		String[] info = leaderboardInfo.split("[,]");
-		System.out.print(info);
+	// setter for the leaderboard table
+	public void setLeaderboard(String[] leaderboardInfo){
+		ArrayList<String> leaderboardText = new ArrayList<String>();
 		
-		for (int i = 0; i < leaderboardInfo.length(); i++) {
-			leaderboard.setText(leaderboard.toString() + info);
+		// Create String that will be displayed to the leaderboard
+		for (int i = 0; i < leaderboardInfo.length; i++) {
+			//Even numbers should always be usernames
+			if((i%2) == 0) {
+				// Remove the bracket from the first name
+				if(leaderboardInfo[i].contains("[")) {
+					leaderboardText.add(leaderboardInfo[i].replace("[",""));
+				}
+				// Trim off any whitespace
+				if(leaderboardInfo[i].startsWith(" ")){
+					leaderboardText.add(leaderboardInfo[i].trim());
+				}
+			}else {
+				// Remove the bracket from the last number
+				if(leaderboardInfo[i].contains("]")) {
+					leaderboardText.add(leaderboardInfo[i].replace("]",""));
+				}else {
+					leaderboardText.add(leaderboardInfo[i]);
+				}
+			}
 		}
+		
+		// Create the columns for the table
+		model.addColumn("Players:");
+		model.addColumn("Wins:");
+		
+		// Iterate throught the leaderboardText to grab store each result within a row
+		for(int i = 0; i < leaderboardText.size();i++) {
+			
+			// temp object to store the name and no_wins
+			String temp[] = {leaderboardText.get(i), leaderboardText.get(i+1)};
+			
+			// insert temp at the rowNum
+			model.addRow(temp);
+			
+			// Increment again to skip to the next row
+			i++;
+		}
+		
+		// Set changes to the table
+		leaderboard.setModel(model);
 	}
-	
-	public String getLeaderboard() {
-		return leaderboard.getText();
-	}
+	// Potentially a getter for the leaderboard (don't think we need)
+//	public void getLeaderboard() {
+//		
+//	}
 	
 	public void setWinLoseLabel (String result) {
 		winLoseLabel.setText(result);
@@ -61,13 +101,7 @@ public class LeaderboardPanel extends JPanel {
 		titleLabel.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		titleLabel.setBounds(170, 95, 250, 15);
 		add(titleLabel);
-		
-		leaderboard = new JTextArea("");
-		leaderboard.setEditable(false);
-		leaderboard.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		leaderboard.setBounds(145, 130, 300, 120);
-		add(leaderboard);
-		
+				
 		logout = new JButton("Logout");
 		logout.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		logout.setBounds(170, 295, 100, 25);
@@ -81,5 +115,18 @@ public class LeaderboardPanel extends JPanel {
 		this.parent = parent;
 		this.client = parent.getChatClient();
 		this.controller = new LeaderboardController(this, parent);
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(145, 130, 300, 120);
+		add(scrollPane);
+		
+		model = new DefaultTableModel();
+		leaderboard = new JTable();
+		leaderboard.setEnabled(false);
+		leaderboard.getTableHeader().setReorderingAllowed(false);
+		leaderboard.getTableHeader().setResizingAllowed(false);
+		leaderboard.setFont(new Font("Tahoma", Font.PLAIN, 12));
+
+		scrollPane.setViewportView(leaderboard);
 	}
 }

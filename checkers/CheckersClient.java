@@ -230,11 +230,10 @@ public class CheckersClient extends AbstractClient{
 			// Grab the leaderboard string
 			String[] leaderboard = test.split(":");
 			String[] info = leaderboard[1].split("[,]");
-			System.out.print(info.toString());
-
-			// pass the string to the leaderboard panel
-			//parent.getLeaderboardPanel().setLeaderboard(leaderboard[1]);
 			
+			// pass the string to the leaderboard panel
+
+			parent.getLeaderboardPanel().setLeaderboard(info);
 			// Change to the leaderboard view
 			parent.changeToLeaderboardView();
 		}
