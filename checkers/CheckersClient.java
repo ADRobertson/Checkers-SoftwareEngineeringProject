@@ -308,4 +308,12 @@ public class CheckersClient extends AbstractClient{
 			e.printStackTrace();
 		}
 	}
+	
+	public void sendLeaveGame() {
+		try {
+			sendToServer("DISCONNECT");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 }

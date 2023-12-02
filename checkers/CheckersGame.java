@@ -45,6 +45,15 @@ public class CheckersGame {
 	private int playerOnePieceCount = 0;
 	private int playerTwoPieceCount = 0;
 	
+	public void handleDisconnect(ConnectionToClient leaver) {
+		if (playerOne == leaver) {
+			server.sendMessageToClient("WIN", playerTwo);
+		}
+		else if (playerTwo == leaver) {
+			server.sendMessageToClient("WIN", playerOne);
+		}
+	}
+	
 	private void endGame() {
 		//send out win and loss messages.
 		if (playerOnePieceCount == 0) {

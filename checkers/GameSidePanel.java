@@ -56,6 +56,7 @@ public class GameSidePanel extends JPanel{
 		
 		logOutButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				parent.getChatClient().sendLeaveGame();
 				parent.changeToLoginView();
 			}
 		});

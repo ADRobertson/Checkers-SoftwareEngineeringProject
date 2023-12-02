@@ -58,7 +58,12 @@ public class CheckersServer extends AbstractServer {
 		
 		String message = arg0.toString();
 		System.out.println(message);
-
+		
+		if (game.isStarted() && message.contains("DISCONNECT")) {
+			game.handleDisconnect(arg1);
+		}
+		
+		
 		if (game.isStarted() && message.contains("SELECT")) {
 			Integer[] rowAndCol = parseRowAndColumn(message);
 			

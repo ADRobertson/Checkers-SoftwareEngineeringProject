@@ -113,6 +113,7 @@ public class ClientGUI extends JFrame{
 		this.addWindowListener(new WindowAdapter() {
 	    	public void windowClosing(WindowEvent e) {
 	    		try {
+	    			client.sendLeaveGame();
 					client.closeConnection();
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
