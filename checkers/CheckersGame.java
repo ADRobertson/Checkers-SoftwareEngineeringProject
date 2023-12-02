@@ -41,6 +41,47 @@ public class CheckersGame {
 	private boolean jumpMove = false;
 	private List<BoardCell> captureMoves = new ArrayList<BoardCell>();
 
+	
+	private int playerOnePieceCount = 0;
+	private int playerTwoPieceCount = 0;
+	
+	private void endGame() {
+		//send out win and loss messages.
+		if (playerOnePieceCount == 0) {
+			server.sendMessageToClient("LOSS", playerOne);
+			server.sendMessageToClient("WIN", playerTwo);
+		}
+		else if (playerTwoPieceCount == 0) {
+			server.sendMessageToClient("WIN", playerOne);
+			server.sendMessageToClient("LOSS", playerTwo);
+			
+		}
+		//call database to increment win count for player who won (also need to store username when that happens.)
+	}
+	
+	private void countPieces() {
+		playerOnePieceCount = 0;
+		playerTwoPieceCount = 0;
+		for (int i = 0; i < rows; i++) {
+			for (int j = 0; j < columns; j++) {
+				BoardCell currentCell = cells[i][j];
+				
+				if (currentCell.hasPiece()) {
+					if (currentCell.getPieceColor() == 0) {
+						playerOnePieceCount = playerOnePieceCount + 1;
+					}
+					else if (currentCell.getPieceColor() == 1) {
+						playerTwoPieceCount = playerTwoPieceCount + 1;
+					}
+				}
+			}
+		}
+		
+		if (playerOnePieceCount == 0 || playerTwoPieceCount == 0) {
+			endGame();
+		}
+	}
+	
 	public boolean getPlayerOneTurn() {
 		return playerOneTurn;
 	}
@@ -85,6 +126,11 @@ public class CheckersGame {
 			to.setPiece(true);
 			to.setKing(from.isKing());
 			if (from.isKing()) {
+				to.setKing(true);
+				from.setKing(false);
+			}
+			else if (!from.isKing()) {
+				to.setKing(false);
 				from.setKing(false);
 			}
 			from = null;
@@ -97,8 +143,12 @@ public class CheckersGame {
 			from.setPiece(false);
 			to.setPieceColor(1);
 			to.setPiece(true);
-			to.setKing(from.isKing());
 			if (from.isKing()) {
+				to.setKing(true);
+				from.setKing(false);
+			}
+			else if (!from.isKing()) {
+				to.setKing(false);
 				from.setKing(false);
 			}
 			from = null;
@@ -115,6 +165,7 @@ public class CheckersGame {
 		toCapture.setPiece(false);
 		toCapture.setKing(false);
 		System.out.println("Captured: " + toCapture.toString());
+		countPieces();
 	}
 
 	//dictionary of boardCell that sends a specific message if we move to a certain piece that is a jump
@@ -520,7 +571,7 @@ public class CheckersGame {
 					}
 					else {
 						try {
-							backLeftMove = cells[backLeftMove.getRow()-1][backLeftMove.getColumn()-1];
+							backLeftMove = cells[backLeftMove.getRow()-1][backLeftMove.getColumn()+1];
 							if (!backLeftMove.hasPiece()) {
 								backLeftIsPossible = true;
 								jumpBackLeft = true;
@@ -539,7 +590,7 @@ public class CheckersGame {
 					}
 					else {
 						try {
-							backRightMove = cells[backRightMove.getRow()-1][backRightMove.getColumn()+1];
+							backRightMove = cells[backRightMove.getRow()-1][backRightMove.getColumn()-1];
 							if (!backRightMove.hasPiece()) {
 								backRightIsPossible = true;
 								jumpBackRight = true;
@@ -560,7 +611,7 @@ public class CheckersGame {
 				}
 				else {
 					try {
-						leftMove = cells[leftMove.getRow()-1][leftMove.getColumn()-1];
+						leftMove = cells[leftMove.getRow()+1][leftMove.getColumn()+1];
 						if (!leftMove.hasPiece()) {
 							leftIsPossible = true;
 							jumpLeft = true;
