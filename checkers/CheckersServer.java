@@ -19,6 +19,7 @@ public class CheckersServer extends AbstractServer {
 	public void setDatabase(Database data) {
 		database = data;
 	}
+		
 	public CheckersServer(JLabel status, JTextArea log) {
 		// super class constructor with port number as param
 		super(12345);
@@ -170,8 +171,35 @@ public class CheckersServer extends AbstractServer {
 				}
 			}
 		}
-
-
+		
+		// Check for WINNER message from client
+		if(message.contains("WINNER")) {
+			
+			// Grab the username of the winner
+			String[] splitString = message.split(":");
+			
+			// Increment the winners win count
+			database.addWin(splitString[1]);
+			
+			try {
+				// Send user scores to client
+				arg1.sendToClient("LEADERBOARD:" + database.query("SELECT username, no_wins FROM user ORDER BY no_wins DESC"));
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		// Check for LOOSER message from client
+		if(message.contains("LOOSER")) {
+			try {
+				// Send user scores to client
+				arg1.sendToClient("LEADERBOARD:" + database.query("SELECT username, no_wins FROM user ORDER BY no_wins DESC"));
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 
 	public void listeningException(Throwable exception) {

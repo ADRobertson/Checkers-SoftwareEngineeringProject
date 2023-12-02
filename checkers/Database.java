@@ -125,48 +125,47 @@ public class Database {
 	
 	public ArrayList<String> query(String query)
 	{
-		//Using the conn object create a statement object
+		ArrayList<String> result = new ArrayList<String>();
+		String username;
+		String no_wins;
+		String record;
+		
 		try {
-			Statement test = conn.createStatement();
-			ResultSet results = test.executeQuery(query);
-			//this will be used to check number of columns in table we are querying.
-			ResultSetMetaData meta = results.getMetaData();
+			//Using the Conn object create a Statement object
+	        Statement test = conn.createStatement();  
+	        
+			//Using the statement object execute using the input query (Return the ResultSet)
+	        ResultSet rs = test.executeQuery(query);  
+	        
+	        //Use a while loop to process the rows - Create a , delimited record from each field
 
-			ArrayList<String> toReturn = new ArrayList<String>();
-
-			//Use a while loop to process the rows - Create a , delimited record from each field
-			//Add each , delimited record to the array list
-			String row = "";
-			int columnCount = meta.getColumnCount();
-			while (results.next()) {
-				for (int i = 1; i <= columnCount; i++) {
-					row = row + results.getString(i) + ",";
-				}
-				if (!row.equals("")) {
-					toReturn.add(row);
-				}
-				row = "";
-			}
-
-			if (toReturn.isEmpty()) {
-				return null;
-			}
-			else {
-				return toReturn;
-			}
-			// if no data found -> return null
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
-		}
+	        if(rs.isBeforeFirst()) {
+	        	while(rs.next()) 
+	    	    {
+	        		//Add each , delimited record to the ArrayList
+	        		username = rs.getString("username");
+	        		no_wins = rs.getString("no_wins");
+	        		record = username + "," + no_wins;
+				
+	        		result.add(record);
+	        	}
+	        }else {	      
+	        	return null;
+	        }
+	      } 
+	      catch (SQLException e)
+	      {
+	        // TODO Auto-generated catch block
+	        e.printStackTrace();
+	      } 
+		return result;
 	}
 	
 	public void addWin(String username) {
 		
 		// Add 1 to the number of wins
 		try {
-			executeDML("UPDATE `user` SET no_wins = no_wins + 1 WHERE username = \"" + username + "\";");
+			executeDML("UPDATE `user` SET no_wins = no_wins + 1 WHERE username = \"" + username + "\"");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -16,11 +16,13 @@ public class LeaderboardPanel extends JPanel {
 	private JButton logout;
 	private JButton exit;
 	
-	public void setLeaderboard (ArrayList<String> leaderboardInfo) {
+	public void setLeaderboard (String leaderboardInfo) {
 		leaderboard.setText("");
+		String[] info = leaderboardInfo.split("[,]");
+		System.out.print(info);
 		
-		for (int i = 0; i < leaderboardInfo.size(); i++) {
-			leaderboard.setText(leaderboard.toString() + leaderboardInfo.get(i));
+		for (int i = 0; i < leaderboardInfo.length(); i++) {
+			leaderboard.setText(leaderboard.toString() + info);
 		}
 	}
 	

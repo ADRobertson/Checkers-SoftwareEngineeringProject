@@ -19,6 +19,8 @@ public class CheckersClient extends AbstractClient{
 	private CreateAccountPanel createAccountView;
 	private MenuPanel menuView;
 	private ClientGUI parent;
+	
+	private String username;
 
 	public void setLoginView(LoginPanel loginView) {
 		this.loginView = loginView;
@@ -186,18 +188,54 @@ public class CheckersClient extends AbstractClient{
 		if (test.equals("END TURN")) {
 			parent.getGameSidePanel().setTurnLabel("End Turn");
 		}
-		if (test.equals("WIN")) {
-			parent.getLeaderboardPanel().setWinLoseLabel("*** YOU WIN ***");
-			
-			//ZAC ADD WIN INCREMENT TO DATABASE
-			
-			parent.changeToLeaderboardView();
+		if (test.equals("WIN") || test.equals("LOSS")) {
+			if (test.equals("WIN")) {
+				
+				// Set the winlose lable to you win
+				parent.getLeaderboardPanel().setWinLoseLabel("*** YOU WIN ***");
+				
+				// Send the username of the winner to the server
+				try {
+					sendToServer("WINNER:" + username);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			else {
+				
+				try {
+					Thread.sleep(5);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				// Set the winlose label to you lose
+				parent.getLeaderboardPanel().setWinLoseLabel("*** YOU LOSE ***");
+				
+				// Ping the server to get the leaderboard
+				try {
+					sendToServer("LOOSER:" + username);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 		}
-		if (test.equals("LOSS")) {
-			parent.getLeaderboardPanel().setWinLoseLabel("*** YOU LOSE ***");
+		
+		// Check for LEADERBOARD message from server
+		if(test.contains("LEADERBOARD")) {
 			
-			//ZAC ADD WIN INCREMENT TO DATABASE
+			// Grab the leaderboard string
+			String[] leaderboard = test.split(":");
+			String[] info = leaderboard[1].split("[,]");
+			System.out.print(info.toString());
+
+			// pass the string to the leaderboard panel
+			//parent.getLeaderboardPanel().setLeaderboard(leaderboard[1]);
 			
+			// Change to the leaderboard view
 			parent.changeToLeaderboardView();
 		}
 		
@@ -229,6 +267,10 @@ public class CheckersClient extends AbstractClient{
 		try {
 			Object testing = loginData.toString();
 			sendToServer("LOGIN:" + testing);
+			
+			// Grab the username
+			this.username = testing.toString().split(",")[0];
+			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

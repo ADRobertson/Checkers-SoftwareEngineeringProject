@@ -244,13 +244,11 @@ public class CheckersGame {
 							BoardCell flippedCapture = cells[dictionary.get(from.getRow()+1)][dictionary.get(from.getColumn()+1)];
 							
 							server.sendMessageToClient("CAPTURE:"+flippedCapture.toString(), playerTwo);
+							capture(cells[from.getRow()+1][from.getColumn()+1]);
+
 						}
 					}
-					
-
 				}
-
-
 
 				//send the exact move to playerOne
 				server.sendMessageToClient("MOVE:" + from.toString() + ";" + cells[i][j].toString(), playerOne);
@@ -272,7 +270,6 @@ public class CheckersGame {
 				}
 
 				flipTurns();
-
 				server.sendMessageToClient("END TURN", playerOne);
 				server.sendMessageToClient("YOUR TURN", playerTwo);
 			}
@@ -390,9 +387,9 @@ public class CheckersGame {
 
 
 				flipTurns();
+				
 				server.sendMessageToClient("END TURN", playerTwo);
 				server.sendMessageToClient("YOUR TURN", playerOne);
-
 			}
 		}
 		return null;
