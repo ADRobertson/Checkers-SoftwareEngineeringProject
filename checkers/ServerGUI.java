@@ -9,6 +9,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.net.InetAddress;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -18,6 +19,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
+
+
 
 public class ServerGUI extends JFrame
 {
@@ -39,6 +42,8 @@ public class ServerGUI extends JFrame
   JPanel south = new JPanel(new FlowLayout());
   private CheckersServer server;
   private boolean listening = false;
+  private InetAddress ip;
+  private String hostAdress;
   
   
   public JTextField[] getTextFields() {
@@ -132,6 +137,8 @@ public class ServerGUI extends JFrame
 					server.setPort(Integer.parseInt(textFields[0].getText()));
 					server.setTimeout(Integer.parseInt(textFields[1].getText()));
 					server.listen();
+					ip = InetAddress.getLocalHost();
+					serverLogTextArea.append(ip + "\n");
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();

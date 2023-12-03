@@ -19,6 +19,7 @@ public class ClientGUI extends JFrame{
 	private LeaderboardPanel leaderboardView;
 	private JPanel gameWrapper;
 	private MenuPanel menuView;
+	private IpPanel ipView;
 	//private CardLayout cardLayout = new CardLayout();
 	//private JPanel mainWrapperPanel = new JPanel(cardLayout);
 	
@@ -67,7 +68,22 @@ public class ClientGUI extends JFrame{
 		this.validate();
 	}
 	
-
+	public void changeToIpView() {
+		this.setSize(600,600);
+		this.setContentPane(ipView);
+		this.invalidate();
+		this.validate();
+	}
+	
+	public boolean openClientConnection(String ipAddress) {
+		try {
+			this.client.setHost(ipAddress);
+			this.client.openConnection();
+			return true;
+		} catch (IOException e) {
+			return false;
+		}
+	}
 	
 	public CheckersClient getChatClient() {
 		return client;
@@ -83,7 +99,7 @@ public class ClientGUI extends JFrame{
 		this.gameInfoView = new GameSidePanel(this);
 		this.gamePlayView = new GamePanel(this, gameInfoView);
 		this.leaderboardView = new LeaderboardPanel(this);
-		
+		this.ipView = new IpPanel(this);
 		
 		this.gameWrapper = new JPanel(new BorderLayout());
 		gameWrapper.add(gamePlayView, BorderLayout.EAST);
@@ -94,18 +110,20 @@ public class ClientGUI extends JFrame{
 		client.setLoginView(loginView);
 		client.setCreateAccountView(createAccountView);
 		
-		
+		/*
 		try {
 			this.client.openConnection();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		*/
 		
 		this.setTitle("Checkers GUI");
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-		changeToInitialView();
+		//changeToInitialView();
+		changeToIpView();
 		
 		this.setVisible(true);
 		this.setResizable(false);
