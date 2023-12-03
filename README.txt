@@ -29,7 +29,7 @@ Then enter "use checkers_space;"
 
 Next run the command "source c:path"
 path should be the path to the project file downloaded at the start and then to the sql file inside that folder
-path should end with "/createCheckersTable.sql"
+path should end with "/project.sql"
 
 Now we are ready to run the bat files to play the game
 
