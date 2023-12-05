@@ -296,6 +296,8 @@ public class CheckersClient extends AbstractClient{
 		try {
 			Object testing = loginData.toString();
 			sendToServer("NEW:"+testing);
+			
+			this.username = testing.toString().split(",")[0];
 		} catch(IOException e) {
 			e.printStackTrace();
 		}
